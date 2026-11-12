@@ -1,0 +1,1078 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>WHSS — Windsor Home Security Systems (Prototype)</title>
+<meta name="description" content="Prototype website for Windsor Home Security Systems (WHSS), an MIS group project with Chapter 13 research on acquiring information systems.">
+<style>
+:root{
+  --navy:#0f2742; --navy-2:#173a5e; --ink:#1b2430; --ink-2:#4a5565; --muted:#6b7584;
+  --line:#dfe4ea; --bg:#ffffff; --bg-2:#f4f6f9; --accent:#f5a524; --accent-ink:#0f2742;
+  --blue:#2563c9; --blue-soft:#e8f0fc; --good:#1d7a46; --good-bg:#e6f4ec; --warn:#9a5b00; --warn-bg:#fff3dc;
+  --bad:#b42318; --bad-bg:#fdecea; --radius:12px; --shadow:0 1px 2px rgba(15,39,66,.06),0 4px 16px rgba(15,39,66,.06);
+  --max:1160px;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;font-family:system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;color:var(--ink);background:var(--bg);line-height:1.6;font-size:16px}
+img,svg{max-width:100%}
+a{color:var(--blue)}
+a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+.wrap{max-width:var(--max);margin:0 auto;padding:0 20px}
+.skip{position:absolute;left:-999px;top:0;background:var(--accent);color:var(--accent-ink);padding:8px 12px;z-index:100}
+.skip:focus{left:8px}
+
+/* Header */
+header.site{background:var(--navy);color:#fff;position:sticky;top:0;z-index:50;box-shadow:0 2px 10px rgba(0,0,0,.15)}
+.hdr{display:flex;align-items:center;gap:16px;min-height:68px}
+.brand{display:flex;align-items:center;gap:10px;color:#fff;text-decoration:none;font-weight:700;letter-spacing:.2px}
+.brand small{display:block;white-space:nowrap;font-weight:500;font-size:11px;opacity:.8;letter-spacing:.4px}
+.brand .wordmark{font-size:20px;line-height:1.1}
+nav.main{margin-left:auto}
+nav.main ul{list-style:none;margin:0;padding:0;display:flex;gap:2px;flex-wrap:wrap}
+nav.main a{color:#e8eef6;text-decoration:none;padding:8px 8px;border-radius:8px;font-size:14px;display:block;white-space:nowrap}
+nav.main a:hover{background:rgba(255,255,255,.08);color:#fff}
+nav.main a[aria-current="page"]{background:rgba(255,255,255,.14);color:#fff}
+nav.main a.research-link{background:var(--accent);color:var(--accent-ink);font-weight:700}
+nav.main a.research-link[aria-current="page"]{box-shadow:inset 0 0 0 2px #fff}
+.menu-btn{display:none;margin-left:auto;background:transparent;border:1px solid rgba(255,255,255,.4);color:#fff;border-radius:8px;padding:8px 12px;font-size:15px}
+@media (max-width:1240px){
+  .menu-btn{display:block}
+  nav.main{display:none;position:absolute;left:0;right:0;top:68px;background:var(--navy);padding:8px 16px 16px}
+  nav.main.open{display:block}
+  nav.main ul{flex-direction:column}
+  nav.main a{padding:12px}
+}
+.demo-strip{background:#fff3dc;color:#6a4000;font-size:13.5px;text-align:center;padding:6px 12px;border-bottom:1px solid #f1d9a6}
+
+/* Common */
+main{min-height:60vh}
+section.page{display:none;padding:0 0 56px}
+section.page.active{display:block}
+.hero{background:linear-gradient(135deg,var(--navy) 0%,var(--navy-2) 70%);color:#fff;padding:64px 0 56px}
+.hero h1{font-size:clamp(30px,4.6vw,48px);line-height:1.12;margin:0 0 14px;max-width:760px}
+.hero p.lead{font-size:clamp(16px,2vw,19px);max-width:640px;color:#d8e2ee;margin:0 0 26px}
+.page-head{background:var(--bg-2);border-bottom:1px solid var(--line);padding:36px 0 28px;margin-bottom:32px}
+.page-head h1{margin:0 0 6px;font-size:clamp(26px,3.6vw,36px);color:var(--navy);line-height:1.2}
+.page-head p{margin:0;color:var(--ink-2);max-width:760px}
+h2{color:var(--navy);font-size:clamp(21px,2.6vw,27px);line-height:1.25;margin:40px 0 12px}
+h3{color:var(--navy);font-size:19px;margin:24px 0 8px}
+.eyebrow{text-transform:uppercase;letter-spacing:1.2px;font-size:12px;font-weight:700;color:var(--accent)}
+.btn{display:inline-flex;align-items:center;gap:8px;border:0;border-radius:10px;padding:12px 18px;font-weight:700;font-size:15px;cursor:pointer;text-decoration:none;font-family:inherit}
+.btn-primary{background:var(--accent);color:var(--accent-ink)}
+.btn-primary:hover{background:#ffb83f}
+.btn-dark{background:var(--navy);color:#fff}
+.btn-dark:hover{background:var(--navy-2)}
+.btn-ghost{background:transparent;color:#fff;border:1px solid rgba(255,255,255,.5)}
+.btn-outline{background:#fff;color:var(--navy);border:1px solid var(--line)}
+.btn-outline:hover{border-color:var(--navy)}
+.btn-row{display:flex;gap:12px;flex-wrap:wrap}
+.grid{display:grid;gap:20px}.grid>*{min-width:0}
+.g2{grid-template-columns:repeat(2,minmax(0,1fr))}
+.g3{grid-template-columns:repeat(3,minmax(0,1fr))}
+.g4{grid-template-columns:repeat(4,minmax(0,1fr))}
+@media (max-width:900px){.g3,.g4{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (max-width:620px){.g2,.g3,.g4{grid-template-columns:1fr}}
+.card{background:#fff;border:1px solid var(--line);border-radius:var(--radius);padding:22px;box-shadow:var(--shadow)}
+.card h3{margin-top:0}
+.muted{color:var(--muted)}
+.small{font-size:14px}
+.badge{display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:700;letter-spacing:.3px;border-radius:999px;padding:3px 10px}
+.badge-demo{background:#fff3dc;color:#7a4a00;border:1px solid #f1d9a6}
+.badge-data{background:var(--blue-soft);color:#1b4f9c;border:1px solid #c9dbf6}
+.badge-good{background:var(--good-bg);color:var(--good)}
+.badge-warn{background:var(--warn-bg);color:var(--warn)}
+.badge-bad{background:var(--bad-bg);color:var(--bad)}
+.notice{border-left:4px solid var(--accent);background:#fffaf0;padding:12px 16px;border-radius:0 10px 10px 0;margin:16px 0;font-size:14.5px}
+.notice.info{border-color:var(--blue);background:var(--blue-soft)}
+table{border-collapse:collapse;width:100%;font-size:14.5px}
+th,td{text-align:left;padding:10px 12px;border-bottom:1px solid var(--line);vertical-align:top}
+th{background:var(--bg-2);color:var(--navy);font-weight:700}
+td.num,th.num{text-align:right;font-variant-numeric:tabular-nums}
+.table-wrap{overflow-x:auto;border:1px solid var(--line);border-radius:10px;background:#fff}
+.table-wrap table th:first-child,.table-wrap table td:first-child{padding-left:14px}
+caption{caption-side:top;text-align:left;font-weight:700;color:var(--navy);padding:0 0 8px}
+
+/* Home */
+.trust{display:flex;gap:22px;flex-wrap:wrap;margin-top:30px;color:#cdd8e6;font-size:14px}
+.trust span::before{content:"✓ ";color:var(--accent);font-weight:700}
+.feature-ico{width:42px;height:42px;border-radius:10px;background:var(--blue-soft);color:var(--navy);display:grid;place-items:center;font-size:20px;margin-bottom:10px}
+.journey{counter-reset:step;display:grid;grid-template-columns:repeat(5,1fr);gap:14px}
+.journey li{list-style:none;background:#fff;border:1px solid var(--line);border-radius:12px;padding:16px;position:relative}
+.journey li::before{counter-increment:step;content:counter(step);display:grid;place-items:center;width:28px;height:28px;border-radius:50%;background:var(--navy);color:#fff;font-weight:700;font-size:14px;margin-bottom:8px}
+.journey{padding:0;margin:0}
+@media (max-width:900px){.journey{grid-template-columns:1fr 1fr}}
+@media (max-width:520px){.journey{grid-template-columns:1fr}}
+.seg{border-top:4px solid var(--navy)}
+
+/* Products */
+.prod{display:flex;flex-direction:column}
+.prod .art{height:150px;border-radius:10px;background:var(--bg-2);display:grid;place-items:center;margin-bottom:14px}
+.prod .price{font-size:22px;font-weight:800;color:var(--navy)}
+.prod ul{padding-left:18px;margin:8px 0 14px;color:var(--ink-2);font-size:14.5px}
+.prod .spacer{flex:1}
+.mob-price{display:none}@media (max-width:560px){#q-items th:nth-child(2),#q-items td:nth-child(2){display:none}.mob-price{display:inline}.qty button{width:32px;height:32px}.qty input{width:44px}}
+.sku{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:12px;color:var(--muted)}
+
+/* Plans */
+.plan{position:relative}
+.plan.featured{border:2px solid var(--navy)}
+.plan .tag{position:absolute;top:-12px;right:16px;background:var(--navy);color:#fff;font-size:12px;font-weight:700;border-radius:999px;padding:3px 10px}
+.plan .amt{font-size:34px;font-weight:800;color:var(--navy)}
+.plan ul{padding-left:0;list-style:none}
+.plan li{padding:6px 0;border-bottom:1px dashed var(--line);font-size:14.5px}
+.plan li::before{content:"✓  ";color:var(--good);font-weight:700}
+
+/* Forms */
+label{display:block;font-weight:600;font-size:14px;margin:12px 0 6px;color:var(--navy)}
+input[type=text],input[type=email],input[type=tel],input[type=number],select,textarea{width:100%;padding:11px 12px;border:1px solid #c5cdd8;border-radius:9px;font:inherit;background:#fff;color:var(--ink)}
+textarea{min-height:120px;resize:vertical}
+.field-err{color:var(--bad);font-size:13px;min-height:18px;margin-top:4px}
+.req{color:var(--bad)}
+.qty{display:flex;align-items:center;gap:6px}
+.qty button{width:36px;height:36px;border-radius:8px;border:1px solid #c5cdd8;background:#fff;font-size:18px;cursor:pointer;color:var(--navy)}
+.qty input{width:56px;text-align:center;padding:7px}
+.quote-layout{display:grid;grid-template-columns:minmax(0,1.5fr) minmax(0,1fr);gap:24px;align-items:start}
+@media (max-width:900px){.quote-layout{grid-template-columns:minmax(0,1fr)}.summary{position:static}}
+.summary{position:sticky;top:90px}
+.sum-line{display:flex;justify-content:space-between;padding:6px 0;font-size:14.5px}
+.sum-total{border-top:2px solid var(--navy);margin-top:8px;padding-top:10px;font-weight:800;font-size:19px;color:var(--navy)}
+.success{background:var(--good-bg);border:1px solid #b9e0c8;color:#14532d;padding:16px;border-radius:10px;margin-top:14px}
+.radio-row{display:grid;gap:10px}
+.radio-card{display:flex;gap:10px;align-items:flex-start;border:1px solid var(--line);border-radius:10px;padding:12px;cursor:pointer;font-weight:400;margin:0;color:var(--ink)}
+.radio-card:has(input:checked){border-color:var(--navy);background:var(--blue-soft)}
+.radio-card input{margin-top:4px}
+
+/* Tracking */
+.track-form{display:flex;gap:10px;flex-wrap:wrap}
+.track-form input{flex:1;min-width:200px}
+.steps{display:flex;gap:0;margin:22px 0;list-style:none;padding:0}
+.steps li{flex:1;text-align:center;position:relative;font-size:13.5px;color:var(--muted)}
+.steps li .dot{width:30px;height:30px;border-radius:50%;margin:0 auto 6px;display:grid;place-items:center;background:#e5e9ef;color:var(--muted);font-weight:700;position:relative;z-index:1}
+.steps li::after{content:"";position:absolute;top:15px;left:50%;width:100%;height:3px;background:#e5e9ef}
+.steps li:last-child::after{display:none}
+.steps li.done{color:var(--navy);font-weight:600}
+.steps li.done .dot{background:var(--navy);color:#fff}
+.steps li.done::after{background:var(--navy)}
+.chips{display:flex;gap:8px;flex-wrap:wrap}
+.chip{border:1px solid var(--line);background:#fff;border-radius:999px;padding:5px 12px;font-size:13px;cursor:pointer;font-family:ui-monospace,Menlo,Consolas,monospace;color:var(--navy)}
+.chip:hover{border-color:var(--navy)}
+dl.kv{display:grid;grid-template-columns:auto 1fr;gap:6px 18px;margin:0;font-size:14.5px}
+dl.kv dt{color:var(--muted)}
+dl.kv dd{margin:0;font-weight:600}
+
+/* Dashboard */
+.kpi{padding:18px}
+.kpi .v{font-size:30px;font-weight:800;color:var(--navy);line-height:1.1;font-variant-numeric:tabular-nums}
+.kpi .l{font-size:13.5px;color:var(--ink-2);margin-top:4px}
+.kpi .s{font-size:12.5px;margin-top:8px}
+.chart{width:100%;height:auto;display:block}
+.chart text{font-family:inherit}
+.tooltip{position:fixed;pointer-events:none;background:var(--navy);color:#fff;font-size:13px;padding:7px 10px;border-radius:8px;box-shadow:0 4px 14px rgba(0,0,0,.2);opacity:0;transition:opacity .1s;z-index:200;max-width:260px}
+.tooltip.on{opacity:1}
+.toggle-table{background:none;border:0;color:var(--blue);font:inherit;font-size:13.5px;cursor:pointer;padding:0;text-decoration:underline}
+th.sortable{cursor:pointer;user-select:none}
+th.sortable::after{content:" ↕";opacity:.45;font-size:12px}
+th.sortable[aria-sort="ascending"]::after{content:" ↑";opacity:1}
+th.sortable[aria-sort="descending"]::after{content:" ↓";opacity:1}
+
+/* Research */
+.research-layout{display:grid;grid-template-columns:250px minmax(0,1fr);gap:40px;align-items:start}
+@media (max-width:980px){.research-layout{grid-template-columns:minmax(0,1fr)}.toc{position:static!important}}
+.toc{position:sticky;top:92px;background:var(--bg-2);border:1px solid var(--line);border-radius:12px;padding:16px;font-size:14px;max-height:calc(100vh - 110px);overflow:auto}
+.toc strong{display:block;color:var(--navy);margin-bottom:6px}
+.toc ol{margin:0;padding-left:20px}
+.toc li{margin:4px 0}
+.toc a{color:var(--ink-2);text-decoration:none}
+.toc a:hover{color:var(--blue);text-decoration:underline}
+article.research{max-width:820px}
+article.research p,article.research li{color:#26303d}
+article.research h2{border-top:1px solid var(--line);padding-top:28px;scroll-margin-top:90px}
+article.research h2:first-of-type{border-top:0;padding-top:0}
+.byline{display:flex;gap:10px;flex-wrap:wrap;margin-top:12px}
+.interp{border:1px solid #c9dbf6;background:var(--blue-soft);border-radius:10px;padding:14px 16px;margin:16px 0}
+.interp b.lbl{display:block;color:#1b4f9c;font-size:12px;letter-spacing:.8px;text-transform:uppercase;margin-bottom:4px}
+.src{font-size:.82em;vertical-align:super;line-height:0}
+.src a{text-decoration:none;font-weight:700}
+.flow{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin:14px 0}
+.flow span.box{background:#fff;border:1px solid var(--navy);border-radius:8px;padding:8px 12px;font-size:13.5px;color:var(--navy);font-weight:600}
+.flow span.arr{color:var(--muted)}
+.calc{background:#fff;border:1px solid var(--line);border-radius:12px;padding:18px;box-shadow:var(--shadow);margin:18px 0}
+.calc .row{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+@media (max-width:620px){.calc .row{grid-template-columns:1fr}}
+.calc output{font-size:24px;font-weight:800;color:var(--navy);display:block;font-variant-numeric:tabular-nums}
+input[type=range]{width:100%}
+ol.refs li{margin-bottom:10px;font-size:14.5px;scroll-margin-top:90px;word-break:break-word}
+ol.refs li:target,ol.refs li.flash{background:#fff3dc;border-radius:6px}
+.fit-high{color:var(--good);font-weight:700}
+.fit-med{color:var(--warn);font-weight:700}
+.fit-low{color:var(--bad);font-weight:700}
+
+/* Footer */
+footer.site{background:var(--navy);color:#cdd8e6;padding:40px 0 26px;font-size:14px}
+footer.site a{color:#fff}
+footer.site h4{color:#fff;margin:0 0 10px;font-size:15px}
+footer.site ul{list-style:none;padding:0;margin:0}
+footer.site li{margin:5px 0}
+.foot-bottom{border-top:1px solid rgba(255,255,255,.15);margin-top:26px;padding-top:16px;font-size:13px}
+.mis-map td{font-size:14px}
+@media print{header.site,footer.site,.demo-strip,.toc{display:none}section.page{display:block!important}}
+</style>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<header class="site">
+  <div class="wrap hdr">
+    <a class="brand" href="#home" aria-label="WHSS home">
+      <svg width="38" height="38" viewBox="0 0 40 40" aria-hidden="true"><path d="M20 3 5 9v10c0 9.5 6.4 15.9 15 18 8.6-2.1 15-8.5 15-18V9L20 3Z" fill="#f5a524"/><path d="M20 10 12 18v11h6v-6h4v6h6V18l-8-8Z" fill="#0f2742"/></svg>
+      <span><span class="wordmark">WHSS</span><small>WINDSOR HOME SECURITY SYSTEMS</small></span>
+    </a>
+    <button class="menu-btn" aria-expanded="false" aria-controls="mainnav">☰ Menu</button>
+    <nav class="main" id="mainnav" aria-label="Main">
+      <ul>
+        <li><a href="#home" data-nav="home">Home</a></li>
+        <li><a href="#products" data-nav="products">Products</a></li>
+        <li><a href="#plans" data-nav="plans">Plans</a></li>
+        <li><a href="#quote" data-nav="quote">Build a Kit</a></li>
+        <li><a href="#track" data-nav="track">Track Order</a></li>
+        <li><a href="#portal" data-nav="portal">Partner Portal</a></li>
+        <li><a href="#privacy" data-nav="privacy">Privacy</a></li>
+        <li><a href="#about" data-nav="about">About</a></li>
+        <li><a href="#contact" data-nav="contact">Contact</a></li>
+        <li><a href="#research" data-nav="research" class="research-link">Research: Ch. 13</a></li>
+      </ul>
+    </nav>
+  </div>
+</header>
+<div class="demo-strip" role="note">Student prototype for an MIS course. WHSS is a fictional company. Features marked <strong>Demo</strong> are simulated and no real orders or messages are sent.</div>
+
+<main id="main">
+
+<!-- ================= HOME ================= -->
+<section class="page" id="page-home" aria-labelledby="h-home">
+  <div class="hero">
+    <div class="wrap">
+      <div class="eyebrow">Made &amp; tested in Windsor, Ontario</div>
+      <h1 id="h-home">Smart home security you can install in an afternoon.</h1>
+      <p class="lead">DIY security kits built for Canadian homes. Cameras, sensors and sirens connect to one hub, with optional 24/7 professional monitoring.</p>
+      <div class="btn-row">
+        <a class="btn btn-primary" href="#quote">Build your kit →</a>
+        <a class="btn btn-ghost" href="#products">See products</a>
+      </div>
+      <div class="trust"><span>Assembled &amp; tested in Windsor</span><span>No-contract monitoring</span><span>Canadian data hosting (proposed)</span><span>Local installer network</span></div>
+    </div>
+  </div>
+
+  <div class="wrap">
+    <h2>Why WHSS</h2>
+    <div class="grid g3">
+      <div class="card"><div class="feature-ico" aria-hidden="true">🛠️</div><h3>DIY in under 2 hours</h3><p class="muted">Every kit ships pre-paired to its hub. Peel, stick and scan the QR code. Prefer help? A local installer partner can do it for you.</p></div>
+      <div class="card"><div class="feature-ico" aria-hidden="true">📡</div><h3>Monitoring when you want it</h3><p class="muted">Use the free app alerts, or add month-to-month professional monitoring with cellular backup. Cancel any time.</p></div>
+      <div class="card"><div class="feature-ico" aria-hidden="true">🔒</div><h3>Privacy by design</h3><p class="muted">Encrypted video, two-step login and strict staff-access rules. Read our <a href="#privacy">privacy &amp; security commitments</a>.</p></div>
+    </div>
+
+    <h2>Who we serve</h2>
+    <div class="grid g3">
+      <div class="card seg"><h3>Homeowners &amp; renters</h3><p class="muted small">Buy direct online. Starter kits from $248, no drilling required.</p><a href="#quote">Build a kit →</a></div>
+      <div class="card seg"><h3>Local installers</h3><p class="muted small">Volume pricing, live stock levels and order tracking in the Partner Portal.</p><a href="#portal">Partner Portal →</a></div>
+      <div class="card seg"><h3>Retail partners</h3><p class="muted small">Shelf-ready packaging and reliable replenishment for stores across Ontario.</p><a href="#contact">Become a retailer →</a></div>
+    </div>
+
+    <h2>Your journey with WHSS</h2>
+    <ol class="journey">
+      <li><strong>Explore</strong><br><span class="muted small">Compare <a href="#products">products</a> and <a href="#plans">plans</a>.</span></li>
+      <li><strong>Build &amp; quote</strong><br><span class="muted small">Use the <a href="#quote">kit builder</a> to get an instant price.</span></li>
+      <li><strong>Order &amp; track</strong><br><span class="muted small">Follow your shipment on the <a href="#track">tracking page</a>.</span></li>
+      <li><strong>Install</strong><br><span class="muted small">DIY, or book a local installer partner.</span></li>
+      <li><strong>Protect &amp; support</strong><br><span class="muted small">Monitoring, app alerts and <a href="#contact">support</a>.</span></li>
+    </ol>
+
+    <h2>How this prototype applies MIS concepts</h2>
+    <p class="muted">Each feature of this site maps to an information system covered in the course.</p>
+    <div class="table-wrap"><table class="mis-map">
+      <thead><tr><th>Site feature</th><th>Information system / MIS concept (chapter)</th><th>What it shows</th></tr></thead>
+      <tbody>
+        <tr><td><a href="#quote">Build a Kit</a></td><td>Transaction processing system (TPS) &amp; e-commerce (Ch. 10, 7)</td><td>Captures an order request, calculates price and tax, creates a quote record</td></tr>
+        <tr><td><a href="#track">Track Order</a></td><td>Supply chain management (SCM), customer self-service (Ch. 11)</td><td>Looks up real WHSS sales orders, ship dates and carriers</td></tr>
+        <tr><td><a href="#portal">Partner Portal</a></td><td>Decision support / business analytics dashboard (Ch. 12)</td><td>KPIs, supplier scorecard and inventory alerts from WHSS data</td></tr>
+        <tr><td><a href="#contact">Contact form</a></td><td>Customer relationship management (CRM) (Ch. 11)</td><td>Captures and routes customer inquiries by topic</td></tr>
+        <tr><td><a href="#privacy">Privacy &amp; Security</a></td><td>Information security, ethics &amp; privacy, PIPEDA (Ch. 3, 4)</td><td>Controls that protect customer video and personal data</td></tr>
+        <tr><td><a href="#research">Research: Ch. 13</a></td><td>Acquiring information systems (Ch. 13)</td><td>How WHSS should plan, justify, acquire and implement a new system</td></tr>
+      </tbody>
+    </table></div>
+  </div>
+</section>
+
+<!-- ================= PRODUCTS ================= -->
+<section class="page" id="page-products" aria-labelledby="h-products">
+  <div class="page-head"><div class="wrap"><h1 id="h-products">Products</h1><p>Six products from the WHSS catalogue, with list prices from the company's item master. Mix and match, or start with a ready-made kit.</p></div></div>
+  <div class="wrap">
+    <div class="grid g3" id="product-grid"></div>
+    <div class="notice info"><span class="badge badge-data">WHSS data</span>&nbsp; Product names, SKUs and prices come from the WHSS <em>Items</em> sheet. Feature descriptions are written by our group for the prototype.</div>
+  </div>
+</section>
+
+<!-- ================= PLANS ================= -->
+<section class="page" id="page-plans" aria-labelledby="h-plans">
+  <div class="page-head"><div class="wrap"><h1 id="h-plans">Monitoring plans</h1><p>Every WHSS system works without a subscription. Add professional monitoring month-to-month when you want it.</p></div></div>
+  <div class="wrap">
+    <div class="grid g3">
+      <div class="card plan"><h3>Self-Monitor</h3><div class="amt">$0<span class="muted small">/mo</span></div><p class="muted small">You get the alerts and you decide what to do.</p><ul><li>Instant app notifications</li><li>Live camera view</li><li>24-hour event history</li><li>Arm / disarm from your phone</li></ul><a class="btn btn-outline" href="#quote" data-plan="self">Choose Self-Monitor</a></div>
+      <div class="card plan featured"><span class="tag">Most popular</span><h3>Monitored</h3><div class="amt">$19.99<span class="muted small">/mo</span></div><p class="muted small">A monitoring agent responds 24/7.</p><ul><li>Everything in Self-Monitor</li><li>24/7 professional monitoring</li><li>Police, fire &amp; EMS dispatch</li><li>30-day encrypted cloud video</li></ul><a class="btn btn-dark" href="#quote" data-plan="basic">Choose Monitored</a></div>
+      <div class="card plan"><h3>Monitored Plus</h3><div class="amt">$34.99<span class="muted small">/mo</span></div><p class="muted small">For larger homes and small businesses.</p><ul><li>Everything in Monitored</li><li>Cellular &amp; battery backup</li><li>60-day cloud video, unlimited cameras</li><li>Annual on-site check by an installer</li></ul><a class="btn btn-outline" href="#quote" data-plan="plus">Choose Plus</a></div>
+    </div>
+    <div class="notice"><span class="badge badge-demo">Demo</span>&nbsp; Plan names and prices are illustrative for this prototype. The WHSS company profile says only that it sells "optional monitoring subscriptions."</div>
+  </div>
+</section>
+
+<!-- ================= QUOTE ================= -->
+<section class="page" id="page-quote" aria-labelledby="h-quote">
+  <div class="page-head"><div class="wrap"><h1 id="h-quote">Build your kit &amp; get a quote</h1><p>Choose your devices, a monitoring plan and how you'd like it installed. Your price updates as you go. <span class="badge badge-demo">Demo: no real order is placed</span></p></div></div>
+  <div class="wrap">
+    <div class="btn-row" style="margin-bottom:18px">
+      <button class="btn btn-outline" data-preset="starter">Apartment Starter</button>
+      <button class="btn btn-outline" data-preset="home">Whole-Home</button>
+      <button class="btn btn-outline" data-preset="outdoor">Outdoor Focus</button>
+      <button class="btn btn-outline" data-preset="clear">Clear</button>
+    </div>
+    <div class="quote-layout">
+      <div>
+        <div class="card">
+          <h3>1. Devices</h3>
+          <p class="muted small">Every system needs one Sentinel Hub.</p>
+          <div class="table-wrap"><table id="q-items"><thead><tr><th>Product</th><th class="num">Price</th><th>Quantity</th></tr></thead><tbody></tbody></table></div>
+          <div class="field-err" id="hub-err" role="alert"></div>
+        </div>
+        <div class="card" style="margin-top:20px">
+          <h3>2. Monitoring</h3>
+          <div class="radio-row" id="q-plans">
+            <label class="radio-card"><input type="radio" name="plan" value="self" checked> <span><strong>Self-Monitor</strong>: $0/mo</span></label>
+            <label class="radio-card"><input type="radio" name="plan" value="basic"> <span><strong>Monitored</strong>: $19.99/mo, 24/7 professional monitoring</span></label>
+            <label class="radio-card"><input type="radio" name="plan" value="plus"> <span><strong>Monitored Plus</strong>: $34.99/mo, cellular backup, 60-day video</span></label>
+          </div>
+          <h3>3. Installation</h3>
+          <div class="radio-row">
+            <label class="radio-card"><input type="radio" name="inst" value="diy" checked> <span><strong>DIY</strong>: free, video guides included</span></label>
+            <label class="radio-card"><input type="radio" name="inst" value="pro"> <span><strong>Professional install</strong> by a WHSS installer partner: $149</span></label>
+          </div>
+        </div>
+        <form class="card" style="margin-top:20px" id="quote-form" novalidate>
+          <h3>4. Your details</h3>
+          <div class="grid g2">
+            <div><label for="q-name">Full name <span class="req">*</span></label><input id="q-name" type="text" autocomplete="name" required><div class="field-err" id="q-name-err"></div></div>
+            <div><label for="q-email">Email <span class="req">*</span></label><input id="q-email" type="email" autocomplete="email" required><div class="field-err" id="q-email-err"></div></div>
+            <div><label for="q-postal">Postal code <span class="req">*</span></label><input id="q-postal" type="text" placeholder="N9A 1A1" autocomplete="postal-code" required><div class="field-err" id="q-postal-err"></div></div>
+            <div><label for="q-type">I am a…</label><select id="q-type"><option>Homeowner</option><option>Renter</option><option>Installer</option><option>Retailer</option></select></div>
+          </div>
+          <div style="margin-top:14px"><button class="btn btn-primary" type="submit">Request my quote</button></div>
+          <div id="quote-success" aria-live="polite"></div>
+        </form>
+      </div>
+      <aside class="card summary" aria-labelledby="sum-h">
+        <h3 id="sum-h" style="margin-top:0">Your quote</h3>
+        <div id="sum-lines"></div>
+        <div class="sum-line"><span>Subtotal (equipment)</span><span id="s-sub">$0.00</span></div>
+        <div class="sum-line"><span>Installation</span><span id="s-inst">$0.00</span></div>
+        <div class="sum-line"><span>HST (13%, Ontario)</span><span id="s-tax">$0.00</span></div>
+        <div class="sum-line sum-total"><span>Due today</span><span id="s-total">$0.00</span></div>
+        <div class="sum-line"><span>Monitoring</span><span id="s-plan">$0.00/mo</span></div>
+        <p class="muted small" style="margin-bottom:0">Free shipping in Ontario on orders over $199. Prices in CAD.</p>
+      </aside>
+    </div>
+  </div>
+</section>
+
+<!-- ================= TRACK ================= -->
+<section class="page" id="page-track" aria-labelledby="h-track">
+  <div class="page-head"><div class="wrap"><h1 id="h-track">Track your order</h1><p>Enter your WHSS order number to see where it is. <span class="badge badge-data">Uses 240 real orders from the WHSS dataset</span></p></div></div>
+  <div class="wrap">
+    <form class="card" id="track-form" novalidate>
+      <label for="t-id">Order number</label>
+      <div class="track-form"><input id="t-id" type="text" placeholder="e.g. SO-CA-00042 or just 42" autocomplete="off"><button class="btn btn-dark" type="submit">Track</button></div>
+      <div class="field-err" id="t-err" role="alert"></div>
+      <p class="muted small" style="margin:6px 0 8px">Try a sample order:</p>
+      <div class="chips" id="t-samples"></div>
+    </form>
+    <div id="t-result" aria-live="polite"></div>
+    <div class="notice"><span class="badge badge-demo">Demo</span>&nbsp; In a live system this page would connect to the order and carrier systems. Here it reads a snapshot of WHSS sales orders (Oct 2025 – Feb 2026). Customer names are hidden for privacy.</div>
+  </div>
+</section>
+
+<!-- ================= PORTAL / DASHBOARD ================= -->
+<section class="page" id="page-portal" aria-labelledby="h-portal">
+  <div class="page-head"><div class="wrap"><h1 id="h-portal">Partner &amp; operations portal</h1><p>A dashboard for installers, retailers and WHSS managers: stock availability, delivery performance and supplier scorecards. <span class="badge badge-demo">Demo: no login</span> <span class="badge badge-data">WHSS data, Oct 2025 – Feb 2026</span></p></div></div>
+  <div class="wrap">
+    <div class="grid g4" id="kpis"></div>
+
+    <h2>Stock availability for partners</h2>
+    <p class="muted">Finished-goods inventory at the latest weekly snapshot (<span id="inv-date"></span>). Items below safety stock are flagged so purchasing can react.</p>
+    <div class="table-wrap"><table id="inv-table"><thead><tr><th>Product</th><th class="num">Available</th><th class="num">Allocated</th><th class="num">On order</th><th class="num">Safety stock</th><th>Status</th></tr></thead><tbody></tbody></table></div>
+
+    <div class="grid g2" style="margin-top:26px">
+      <div class="card">
+        <h3>On-time &amp; in-full delivery by month</h3>
+        <p class="muted small">Share of customer orders delivered on time and complete (OTIF).</p>
+        <div id="ch-otif"></div>
+        <button class="toggle-table" data-target="tb-otif">Show as table</button>
+        <div id="tb-otif" hidden></div>
+      </div>
+      <div class="card">
+        <h3>On-time delivery by carrier</h3>
+        <p class="muted small">Share of shipments delivered on time, by carrier.</p>
+        <div id="ch-car"></div>
+        <button class="toggle-table" data-target="tb-car">Show as table</button>
+        <div id="tb-car" hidden></div>
+      </div>
+    </div>
+
+    <h2>Supplier scorecard</h2>
+    <p class="muted">Purchase-order lines by supplier. Click a column heading to sort. On-time is the share of PO lines received by the promised date; defects are parts per million (PPM).</p>
+    <div class="table-wrap"><table id="sup-table"><thead><tr>
+      <th class="sortable" data-k="n">Supplier</th><th class="sortable" data-k="c">Region</th><th class="sortable num" data-k="spend">Spend (CAD)</th><th class="sortable num" data-k="ot">On-time</th><th class="sortable num" data-k="lead">Avg lead (days)</th><th class="sortable num" data-k="ppm">Defect PPM</th>
+    </tr></thead><tbody></tbody></table></div>
+    <div class="interp"><b class="lbl">What the dashboard tells a manager</b>The factory is not the bottleneck: yield is about 98.5%. The weak links are <strong>inbound supply</strong> (only 28% of PO lines on time, and the two China-based suppliers average 35+ days) and <strong>outbound delivery</strong> (13% OTIF; about 53% of orders ship after the promised date). This is the business case for the system WHSS should acquire, explained on the <a href="#research">Chapter 13 research page</a>.</div>
+  </div>
+</section>
+
+<!-- ================= PRIVACY ================= -->
+<section class="page" id="page-privacy" aria-labelledby="h-privacy">
+  <div class="page-head"><div class="wrap"><h1 id="h-privacy">Privacy &amp; security</h1><p>Cameras in your home are personal. These are the controls WHSS commits to, written to align with Canada's private-sector privacy law (PIPEDA).</p></div></div>
+  <div class="wrap">
+    <div class="grid g2">
+      <div class="card"><h3>🔐 Encryption everywhere</h3><p class="muted">Video and sensor events are encrypted on the device, in transit and at rest. Customers can turn on end-to-end encryption so that not even WHSS can view footage.</p></div>
+      <div class="card"><h3>👤 Least-privilege staff access</h3><p class="muted">Employees and contractors cannot browse customer video. Access requires the customer's consent for a specific support ticket, and every view is logged and audited.</p></div>
+      <div class="card"><h3>📱 Two-step login by default</h3><p class="muted">Every account uses two-step verification, which blocks attackers who reuse passwords stolen from other websites.</p></div>
+      <div class="card"><h3>🍁 Data kept in Canada</h3><p class="muted">Account data and cloud video are stored in Canadian data centres (a proposed requirement for any software-as-a-service vendor WHSS selects).</p></div>
+      <div class="card"><h3>🗓️ Clear retention</h3><p class="muted">Cloud video is deleted automatically after 30 or 60 days depending on plan. Customers can download or delete it sooner.</p></div>
+      <div class="card"><h3>🚫 No secret AI training</h3><p class="muted">Customer video is never used to train algorithms without separate, opt-in consent.</p></div>
+    </div>
+    <h2>Why these controls matter</h2>
+    <p>In a 2023 complaint, the U.S. Federal Trade Commission charged that Ring, Amazon's home-camera business, failed to restrict employees' and contractors' access to customer videos, used videos to train algorithms without consent, and lacked security protections against hackers. In 2024 the FTC sent more than US$5.6 million in refunds to Ring customers under the settlement.<span class="src"><a href="#research--ref-6">[6]</a></span> Canada's Privacy Commissioner has published guidance telling makers of connected devices such as cameras, doorbells and alarms how PIPEDA's privacy principles apply to them.<span class="src"><a href="#research--ref-10">[10]</a></span></p>
+    <div class="notice"><span class="badge badge-demo">Demo</span>&nbsp; These are proposed policies for the prototype, not a legal privacy policy.</div>
+  </div>
+</section>
+
+<!-- ================= ABOUT ================= -->
+<section class="page" id="page-about" aria-labelledby="h-about">
+  <div class="page-head"><div class="wrap"><h1 id="h-about">About WHSS</h1><p>A Windsor, Ontario company of about 100 people that designs, assembles and tests DIY home security kits.</p></div></div>
+  <div class="wrap">
+    <div class="grid g2">
+      <div>
+        <h2 style="margin-top:0">Built in Windsor</h2>
+        <p>WHSS designs DIY home security kits and sells optional monitoring subscriptions. Final assembly, kitting, testing and packaging happen at our Windsor facility, across three work centres: <strong>Kitting</strong>, <strong>Assembly</strong>, and <strong>Test &amp; Pack</strong>.</p>
+        <p>We source key electronics (circuit boards, Wi-Fi modules and camera modules) from partners in the United States, Sweden and China. Plastics, packaging, batteries and fasteners come from Ontario suppliers close to home.</p>
+        <p>Customers reach us three ways: <strong>direct online</strong>, through <strong>local installers</strong>, and through a group of <strong>retail accounts</strong> in Ontario.</p>
+        <h3>Our operating goals</h3>
+        <ul><li>Reliable product availability</li><li>Low return rates</li><li>On-time delivery that meets customer service-level agreements (SLAs)</li></ul>
+      </div>
+      <div class="card">
+        <h3>WHSS at a glance</h3>
+        <dl class="kv">
+          <dt>Headquarters</dt><dd>Windsor, Ontario</dd>
+          <dt>Employees</dt><dd>~100</dd>
+          <dt>Products</dt><dd>6 finished goods</dd>
+          <dt>Suppliers</dt><dd>12 in 5 countries</dd>
+          <dt>Customers</dt><dd>60 accounts (34 online, 20 installers, 6 retail)</dd>
+          <dt>Production yield</dt><dd>98.5%</dd>
+        </dl>
+        <p class="muted small" style="margin-bottom:0">Source: WHSS company profile and dataset (Oct 2025 – Feb 2026).</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= CONTACT ================= -->
+<section class="page" id="page-contact" aria-labelledby="h-contact">
+  <div class="page-head"><div class="wrap"><h1 id="h-contact">Contact us</h1><p>Questions about a product, an order or becoming a partner? Send us a message. <span class="badge badge-demo">Demo: messages are not sent</span></p></div></div>
+  <div class="wrap">
+    <div class="grid g2">
+      <form class="card" id="contact-form" novalidate>
+        <label for="c-name">Name <span class="req">*</span></label><input id="c-name" type="text" autocomplete="name"><div class="field-err" id="c-name-err"></div>
+        <label for="c-email">Email <span class="req">*</span></label><input id="c-email" type="email" autocomplete="email"><div class="field-err" id="c-email-err"></div>
+        <label for="c-topic">Topic</label>
+        <select id="c-topic"><option value="sales">Product question (Sales)</option><option value="support">Order or technical support</option><option value="partner">Become an installer or retail partner</option><option value="privacy">Privacy request</option></select>
+        <label for="c-order">Order number (optional)</label><input id="c-order" type="text" placeholder="SO-CA-00000">
+        <label for="c-msg">Message <span class="req">*</span></label><textarea id="c-msg"></textarea><div class="field-err" id="c-msg-err"></div>
+        <button class="btn btn-primary" type="submit" style="margin-top:8px">Send message</button>
+        <div id="contact-success" aria-live="polite"></div>
+      </form>
+      <div>
+        <div class="card"><h3>Reach WHSS</h3><dl class="kv"><dt>Location</dt><dd>Windsor, Ontario, Canada</dd><dt>Sales</dt><dd>sales@whss.example</dd><dt>Support</dt><dd>support@whss.example</dd><dt>Hours</dt><dd>Mon–Fri, 8 a.m. – 6 p.m. ET</dd></dl><p class="muted small" style="margin-bottom:0">Contact details are placeholders (".example" addresses).</p></div>
+        <div class="card" style="margin-top:20px"><h3>How your message is handled</h3><p class="muted small" style="margin:0">In a live system, the form would create a case in a CRM. It would be routed to Sales, Support, Partnerships or the Privacy Officer by topic, and linked to your order if you give the number. That routing is the CRM concept in practice.</p></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= RESEARCH ================= -->
+<section class="page" id="page-research" aria-labelledby="h-research">
+  <div class="page-head"><div class="wrap">
+    <div class="eyebrow" style="color:#9a5b00">Assigned chapter research · Chapter 13</div>
+    <h1 id="h-research">Acquiring Information Systems: How WHSS Should Get the System It Needs</h1>
+    <p>Applying Rainer &amp; Prince, <em>Introduction to Information Systems</em> (11th ed.), Chapter 13 to Windsor Home Security Systems, using the company's own data.</p>
+    <div class="byline"><span class="badge badge-data">Group: [add member names]</span><span class="badge badge-data">Course: Introduction to MIS</span></div>
+  </div></div>
+  <div class="wrap research-layout">
+    <nav class="toc" aria-label="Research contents">
+      <strong>Contents</strong>
+      <ol>
+        <li><a href="#research--r-intro">Research question</a></li>
+        <li><a href="#research--r-problem">The problem in WHSS's data</a></li>
+        <li><a href="#research--r-plan">IT planning</a></li>
+        <li><a href="#research--r-cba">Justifying the investment</a></li>
+        <li><a href="#research--r-decisions">Four acquisition decisions</a></li>
+        <li><a href="#research--r-options">Acquisition options compared</a></li>
+        <li><a href="#research--r-sdlc">The SDLC for WHSS</a></li>
+        <li><a href="#research--r-methods">Alternative methods &amp; tools</a></li>
+        <li><a href="#research--r-risks">Risks &amp; trade-offs</a></li>
+        <li><a href="#research--r-site">This website as a Ch. 13 case</a></li>
+        <li><a href="#research--r-links">Links to other chapters</a></li>
+        <li><a href="#research--r-rec">Recommendation</a></li>
+        <li><a href="#research--r-refs">References</a></li>
+      </ol>
+    </nav>
+    <article class="research">
+      <div class="card" style="border-top:5px solid var(--accent);margin-bottom:18px">
+        <h3 style="margin-top:0">Key takeaways</h3>
+        <ul style="margin:0;padding-left:20px">
+          <li><strong>Problem:</strong> WHSS's data shows its factory works well (98.5% yield), but its <em>information flow</em> fails: 27.8% of supplier deliveries on time, 13.3% of customer orders on time and in full.</li>
+          <li><strong>Chapter 13 answer:</strong> plan the system around strategy, justify it with NPV, ROI, break-even and a business case, then choose how to acquire it.</li>
+          <li><strong>Recommendation:</strong> <em>lease</em> a cloud ERP with supply chain and inventory modules (SaaS), configured rather than custom-built, rolled out with a <em>pilot</em> and then in <em>phases</em>.</li>
+          <li><strong>Business case:</strong> about a 9-month payback and a 5-year NPV near $195K. It stays positive if WHSS captures at least ~41% of the estimated benefits.</li>
+          <li><strong>Biggest risks:</strong> poor change management, scope creep and vendor privacy practices. Canada's Phoenix pay system shows the cost of skipping a pilot.</li>
+        </ul>
+      </div>
+      <div class="notice info" style="margin-top:0">How to read this page: plain paragraphs report facts from cited sources (numbers in brackets link to the <a href="#research--r-refs">reference list</a>). Blue <strong>"Our analysis"</strong> boxes are our group's own interpretation and estimates.</div>
+
+      <h2 id="r-intro">1. Research question</h2>
+      <p>Chapter 13 explains how organizations <strong>plan for, justify, acquire and implement</strong> information systems. It covers IT strategic planning, cost-benefit analysis, the decision to buy, lease or build, and the systems development life cycle (SDLC), along with faster alternatives such as prototyping, Agile and low-code tools.<span class="src"><a href="#research--ref-1">[1]</a></span></p>
+      <p>We apply those ideas to one practical question: <strong>WHSS is missing delivery promises to its customers and from its suppliers. What information system should it acquire to fix this, how should it pay for it, and how should it roll it out?</strong></p>
+
+      <h2 id="r-problem">2. The problem in WHSS's data</h2>
+      <p>We analyzed WHSS's procurement, production and fulfillment records from October 2025 to February 2026.<span class="src"><a href="#research--ref-2">[2]</a></span></p>
+      <div class="table-wrap"><table>
+        <caption>Key performance indicators, Oct 2025 – Feb 2026</caption>
+        <thead><tr><th>Area</th><th>Measure</th><th class="num">Result</th><th>Verdict</th></tr></thead>
+        <tbody>
+          <tr><td>Procurement</td><td>Purchase-order lines received on time</td><td class="num">27.8%</td><td><span class="badge badge-bad">✕ Poor</span></td></tr>
+          <tr><td>Procurement</td><td>Average supplier lead time</td><td class="num">17.4 days</td><td><span class="badge badge-warn">! Long, highly variable</span></td></tr>
+          <tr><td>Production</td><td>Overall yield / first-pass yield</td><td class="num">98.5% / 99.1%</td><td><span class="badge badge-good">✓ Good</span></td></tr>
+          <tr><td>Production</td><td>Actual vs. planned labour hours</td><td class="num">+8.8%</td><td><span class="badge badge-warn">! Over plan</span></td></tr>
+          <tr><td>Inventory</td><td>Weekly snapshots with stock below safety level</td><td class="num">54.5%</td><td><span class="badge badge-bad">✕ Poor</span></td></tr>
+          <tr><td>Fulfillment</td><td>Orders on time and in full (OTIF)</td><td class="num">13.3%</td><td><span class="badge badge-bad">✕ Poor</span></td></tr>
+          <tr><td>Fulfillment</td><td>Orders shipped after the promised date</td><td class="num">52.9%</td><td><span class="badge badge-bad">✕ Poor</span></td></tr>
+          <tr><td>Returns</td><td>Return rate (units)</td><td class="num">2.5%</td><td><span class="badge badge-good">✓ Low</span></td></tr>
+        </tbody>
+      </table></div>
+      <div class="interp"><b class="lbl">Our analysis</b>WHSS does not have a <em>making</em> problem. It has a <em>planning and information</em> problem. Material shortages caused 25 of the 132 downtime events on the shop floor, stock was below safety level in more than half of the weekly snapshots, and over half of orders left the building late before a carrier ever touched them. These are symptoms of disconnected purchasing, inventory and order data, often kept in spreadsheets. That is the kind of problem an integrated information system solves. See the live charts in the <a href="#portal">Partner Portal</a>.</div>
+
+      <h2 id="r-plan">3. IT planning: aligning the system with strategy</h2>
+      <p>Chapter 13's planning process starts with the organization's mission and strategic plan. It then assesses the current IT architecture, sets an IS strategic plan, and turns that into an IS operational plan and specific development projects.<span class="src"><a href="#research--ref-1">[1]</a></span></p>
+      <div class="flow" aria-label="Planning process diagram"><span class="box">Mission &amp; business assessment</span><span class="arr">→</span><span class="box">Strategic plan</span><span class="arr">→</span><span class="box">IS strategic plan</span><span class="arr">→</span><span class="box">New IT architecture</span><span class="arr">→</span><span class="box">IS operational plan</span><span class="arr">→</span><span class="box">IS projects</span></div>
+      <p>The chapter says an IT strategic plan must meet three objectives: <strong>(1)</strong> align with the organization's strategic plan; <strong>(2)</strong> provide an IT architecture that connects users, applications and databases; and <strong>(3)</strong> allocate development resources efficiently so projects finish on time and on budget.<span class="src"><a href="#research--ref-1">[1]</a></span></p>
+      <div class="table-wrap"><table>
+        <thead><tr><th>Objective</th><th>Applied to WHSS</th></tr></thead>
+        <tbody>
+          <tr><td>Align with strategy</td><td>WHSS's stated goals are reliable availability, low returns and on-time delivery. The system must directly support those three, not just "modernize IT."</td></tr>
+          <tr><td>Connected architecture</td><td>Purchasing, inventory, production and customer orders must share one database so a late supplier shipment updates the promise date a customer sees.</td></tr>
+          <tr><td>Efficient resource allocation</td><td>A ~100-person firm has little IT staff, so the plan should favour options that need minimal internal programming.</td></tr>
+        </tbody>
+      </table></div>
+
+            <h3>WHSS's IS operational plan</h3>
+      <p>Chapter 13 lists the parts of a typical IS operational plan: the mission, the IS environment, the IS function's objectives and constraints, the application portfolio, and resource allocation and project management.<span class="src"><a href="#research--ref-1">[1]</a></span> A first draft for WHSS:</p>
+      <div class="table-wrap"><table>
+        <thead><tr><th>Plan element</th><th>WHSS draft (our analysis)</th></tr></thead>
+        <tbody>
+          <tr><td>Mission of the IS function</td><td>Give every department one accurate, shared view of supply, inventory and orders so WHSS can keep its delivery promises.</td></tr>
+          <tr><td>IS environment</td><td>Disconnected tools today: separate purchasing, production and order records, joined only by IDs such as SupplierID, ItemID and SO_ID.</td></tr>
+          <tr><td>Objectives</td><td>Raise on-time supplier receipts from 27.8% and customer OTIF from 13.3%; cut weeks below safety stock from 54.5%.</td></tr>
+          <tr><td>Constraints</td><td>Small IT staff, limited capital budget, US-dollar exposure, and privacy duties under PIPEDA.</td></tr>
+          <tr><td>Application portfolio</td><td>Priority 1: cloud ERP (procurement, inventory, sales orders). Priority 2: e-commerce site and CRM. Priority 3: AI demand forecasting.</td></tr>
+          <tr><td>Resource allocation &amp; project management</td><td>One project sponsor (operations), one part-time system administrator, an external implementation partner, and a phased budget released at each go/no-go gate.</td></tr>
+        </tbody>
+      </table></div>
+
+<h2 id="r-cba">4. Justifying the investment: cost-benefit analysis</h2>
+      <p>The textbook lists four common ways to justify an IT investment: <strong>net present value (NPV)</strong>, <strong>return on investment (ROI)</strong>, <strong>break-even analysis</strong>, and the <strong>business case approach</strong>.<span class="src"><a href="#research--ref-1">[1]</a></span> Benefits are often harder to measure than costs, so assumptions must be stated openly.</p>
+      <p>For costs, we priced a cloud ERP subscription. Odoo's published Standard plan, for example, lists about US$31.10 per user per month on annual billing.<span class="src"><a href="#research--ref-9">[9]</a></span> We converted at C$1.33 per US dollar, the average rate in the WHSS dataset.</p>
+      <div class="table-wrap"><table>
+        <caption>Our estimates (annual, CAD), based on WHSS data annualized from 5 months</caption>
+        <thead><tr><th>Item</th><th>Basis</th><th class="num">Amount</th></tr></thead>
+        <tbody>
+          <tr><td colspan="3"><strong>Benefits per year</strong></td></tr>
+          <tr><td>Purchasing &amp; admin time saved</td><td>Automated reorder points and PO tracking: 20 hrs/week × $30/hr</td><td class="num">$31,200</td></tr>
+          <tr><td>Purchase cost savings</td><td>1% of ~$2.23M annual landed purchases through better planning and fewer rush buys</td><td class="num">$22,341</td></tr>
+          <tr><td>Inbound freight savings</td><td>10% of ~$158.5K annual freight through consolidated, planned orders</td><td class="num">$15,851</td></tr>
+          <tr><td>Retained sales</td><td>3% of ~$354K annual revenue kept by improving OTIF</td><td class="num">$10,624</td></tr>
+          <tr><td>Fewer returns</td><td>40% fewer missing-parts and damage returns (~$6.4K/yr cost)</td><td class="num">$2,574</td></tr>
+          <tr><td colspan="2"><strong>Total annual benefits</strong></td><td class="num"><strong>$82,590</strong></td></tr>
+          <tr><td colspan="3"><strong>Costs</strong></td></tr>
+          <tr><td>Implementation (one-time)</td><td>Setup partner, data migration, training</td><td class="num">$45,000</td></tr>
+          <tr><td>Subscription (per year)</td><td>25 users × US$31.10 × 12 × 1.33</td><td class="num">$12,412</td></tr>
+          <tr><td>Internal support (per year)</td><td>Part-time system administrator time</td><td class="num">$10,000</td></tr>
+        </tbody>
+      </table></div>
+
+      <div class="calc" id="calc">
+        <h3 style="margin-top:0">Interactive cost-benefit calculator <span class="badge badge-demo">Decision support demo</span></h3>
+        <p class="muted small">Benefits are the most uncertain part of any business case. Drag the slider to see how the result changes if WHSS achieves only part of the estimated benefits.</p>
+        <label for="cb-real">Share of estimated benefits actually achieved: <strong id="cb-real-v">100%</strong></label>
+        <input type="range" id="cb-real" min="0" max="150" step="5" value="100">
+        <div class="grid g2" style="gap:14px">
+          <div><label for="cb-rate">Discount rate</label><select id="cb-rate"><option value="0.06">6%</option><option value="0.08" selected>8%</option><option value="0.10">10%</option><option value="0.12">12%</option></select></div>
+          <div><label for="cb-users">ERP users</label><select id="cb-users"><option>15</option><option selected>25</option><option>40</option></select></div>
+        </div>
+        <div class="row" style="margin-top:16px">
+          <div class="card kpi"><output id="cb-npv">–</output><div class="l">NPV (5 years)</div></div>
+          <div class="card kpi"><output id="cb-roi">–</output><div class="l">ROI (5 years)</div></div>
+          <div class="card kpi"><output id="cb-pay">–</output><div class="l">Break-even (payback)</div></div>
+        </div>
+        <p class="small" id="cb-note" style="margin-bottom:0"></p>
+      </div>
+      <div class="interp"><b class="lbl">Our analysis</b>With our base estimates, the system pays for itself in under a year and has a five-year NPV near $195K at 8%. The more useful finding is the <strong>break-even point: NPV stays positive as long as WHSS captures roughly 40% or more of the estimated benefits.</strong> That margin of safety is what the business case approach should stress to management. It also shows why the chapter warns that intangible benefits must be argued carefully.</div>
+
+      <h2 id="r-decisions">5. The four fundamental acquisition decisions</h2>
+      <p>Chapter 13 frames every acquisition around four questions.<span class="src"><a href="#research--ref-1">[1]</a></span> Our answers for WHSS:</p>
+      <div class="table-wrap"><table>
+        <thead><tr><th>Decision</th><th>WHSS answer</th></tr></thead>
+        <tbody>
+          <tr><td>How much computer code does the company want to write?</td><td><strong>Very little.</strong> WHSS's needs (purchasing, inventory, manufacturing orders, sales orders) are standard. Configuration beats custom code.</td></tr>
+          <tr><td>How will the company pay for the application?</td><td><strong>Subscription (lease).</strong> This turns a large up-front capital cost into a predictable operating expense, which suits a small firm's cash flow.</td></tr>
+          <tr><td>Where will the application run?</td><td><strong>In the vendor's cloud</strong> (software-as-a-service), with a requirement for Canadian data hosting.</td></tr>
+          <tr><td>Where will the application originate?</td><td><strong>An established vendor</strong>, with a local implementation partner. It should not be built in-house.</td></tr>
+        </tbody>
+      </table></div>
+      <p>This matches broader Canadian trends. Statistics Canada reported that cloud computing was the most-used information and communication technology among Canadian businesses in 2023, at 48%.<span class="src"><a href="#research--ref-3">[3]</a></span> The Canadian Federation of Independent Business (CFIB) found that 92% of small businesses use digital tools but only about 10% have fully integrated them across operations, with cost, time and skills as the main barriers.<span class="src"><a href="#research--ref-4">[4]</a></span></p>
+
+      <h2 id="r-options">6. Acquisition options compared</h2>
+      <p>The chapter describes several ways to acquire an application: buy a prewritten package, customize one, lease it (including from an application service provider or software-as-a-service vendor), use open-source software, outsource, or develop it in-house.<span class="src"><a href="#research--ref-1">[1]</a></span> The table below weighs each for WHSS.</p>
+      <div class="table-wrap"><table>
+        <thead><tr><th>Option</th><th>Advantages (Ch. 13)</th><th>Disadvantages (Ch. 13)</th><th>Fit for WHSS</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Buy prewritten (off-the-shelf)</strong></td><td>Saves time; can try before buying; know what you get</td><td>May not fit exactly; hard to modify; vendor controls updates; integration difficulty</td><td class="fit-med">Medium</td></tr>
+          <tr><td><strong>Customize prewritten</strong></td><td>Flexibility when specific needs exist</td><td>Customization can be difficult and costly; upgrades get harder</td><td class="fit-med">Medium (only light configuration)</td></tr>
+          <tr><td><strong>Lease / software-as-a-service (SaaS)</strong></td><td>Affordable for small and medium firms; includes common features; vendor runs it</td><td>May not fit requirements exactly; depends on vendor and internet</td><td class="fit-high">High: recommended</td></tr>
+          <tr><td><strong>Application service provider (ASP)</strong></td><td>Vendor hosts a separate copy per customer</td><td>Less economical than multi-tenant SaaS</td><td class="fit-low">Low</td></tr>
+          <tr><td><strong>Open-source</strong> (e.g., Odoo Community)</td><td>No licence fee; source code can be changed</td><td>WHSS must host, secure and support it itself</td><td class="fit-med">Medium (backup option)</td></tr>
+          <tr><td><strong>Outsource</strong> development</td><td>Access to outside expertise</td><td>Less control; communication and quality risk</td><td class="fit-low">Low</td></tr>
+          <tr><td><strong>Custom development</strong> in-house</td><td>Exact fit; potential competitive advantage</td><td>Most expensive and slowest; needs scarce developers; highest risk</td><td class="fit-low">Low</td></tr>
+        </tbody>
+      </table></div>
+      <div class="interp"><b class="lbl">Our analysis</b>The deciding factors are WHSS's size and the nature of its problem. Supplier tracking, reorder points and order promising are <em>common</em> processes that every ERP handles. Custom development is justified only when a process is a source of competitive advantage, and WHSS's advantage is its products and local service, not its purchasing software. SaaS gives WHSS standard best-practice processes at a cost it can afford.</div>
+      <h3>ASP vs. SaaS: what's the difference?</h3>
+      <p>Figures 13.2 and 13.3 in the chapter contrast the two hosted models.<span class="src"><a href="#research--ref-1">[1]</a></span> An <strong>application service provider</strong> runs a separate copy of the application and database for each customer. A <strong>software-as-a-service</strong> vendor runs one copy of the application for all customers, with each customer's data kept apart inside a shared database. Because SaaS spreads one system across many customers, it is usually cheaper and updated more often, which suits a small firm like WHSS.</p>
+      <svg viewBox="0 0 640 200" role="img" aria-label="Diagram: an ASP runs one application and database per customer; SaaS runs one application and one shared database for all customers" style="width:100%;max-width:640px;display:block;margin:10px 0 4px">
+        <g font-family="system-ui,sans-serif" font-size="12" fill="#1b2430">
+          <text x="150" y="16" text-anchor="middle" font-weight="700" fill="#0f2742">ASP: one copy per customer</text>
+          <g fill="#e8f0fc" stroke="#2563c9">
+            <rect x="20" y="30" width="80" height="34" rx="6"/><rect x="110" y="30" width="80" height="34" rx="6"/><rect x="200" y="30" width="80" height="34" rx="6"/>
+            <rect x="20" y="80" width="80" height="34" rx="6"/><rect x="110" y="80" width="80" height="34" rx="6"/><rect x="200" y="80" width="80" height="34" rx="6"/>
+          </g>
+          <text x="60" y="51" text-anchor="middle">App A</text><text x="150" y="51" text-anchor="middle">App B</text><text x="240" y="51" text-anchor="middle">App C</text>
+          <text x="60" y="101" text-anchor="middle">DB A</text><text x="150" y="101" text-anchor="middle">DB B</text><text x="240" y="101" text-anchor="middle">DB C</text>
+          <text x="60" y="150" text-anchor="middle">Customer A</text><text x="150" y="150" text-anchor="middle">Customer B</text><text x="240" y="150" text-anchor="middle">Customer C</text>
+          <g stroke="#9aa3af"><line x1="60" y1="114" x2="60" y2="136"/><line x1="150" y1="114" x2="150" y2="136"/><line x1="240" y1="114" x2="240" y2="136"/></g>
+          <line x1="320" y1="20" x2="320" y2="180" stroke="#dfe4ea"/>
+          <text x="480" y="16" text-anchor="middle" font-weight="700" fill="#0f2742">SaaS: one shared copy</text>
+          <rect x="400" y="30" width="160" height="34" rx="6" fill="#e8f0fc" stroke="#2563c9"/><text x="480" y="51" text-anchor="middle">One application</text>
+          <rect x="400" y="80" width="160" height="34" rx="6" fill="#e8f0fc" stroke="#2563c9"/><text x="480" y="101" text-anchor="middle">Shared DB (A | B | C)</text>
+          <text x="400" y="150" text-anchor="middle">Customer A</text><text x="480" y="150" text-anchor="middle">Customer B</text><text x="560" y="150" text-anchor="middle">Customer C</text>
+          <g stroke="#9aa3af"><line x1="480" y1="114" x2="400" y2="136"/><line x1="480" y1="114" x2="480" y2="136"/><line x1="480" y1="114" x2="560" y2="136"/></g>
+          <text x="320" y="190" text-anchor="middle" font-size="11" fill="#6b7584">Based on Rainer &amp; Prince, Figures 13.2 and 13.3</text>
+        </g>
+      </svg>
+
+      <h2 id="r-sdlc">7. The systems development life cycle (SDLC) for WHSS</h2>
+      <p>Even when a system is leased, the chapter's six SDLC stages still structure the project: investigation, analysis, design, programming and testing, implementation, and operation and maintenance.<span class="src"><a href="#research--ref-1">[1]</a></span></p>
+      <div class="table-wrap"><table>
+        <thead><tr><th>Stage</th><th>Deliverable</th><th>What WHSS does</th></tr></thead>
+        <tbody>
+          <tr><td>1. Systems investigation</td><td>Go / no-go decision</td><td>Compare the three basic solutions: do nothing, modify the current tools, or acquire a new system. Then run a feasibility study. <em>Technical:</em> can a SaaS ERP connect to the web store and carriers? <em>Economic:</em> the cost-benefit analysis above. <em>Behavioural:</em> will buyers, planners and warehouse staff use it?</td></tr>
+          <tr><td>2. Systems analysis</td><td>User requirements</td><td>Document current processes and pain points: late POs, stockouts, missed promise dates. Gather requirements from each department.</td></tr>
+          <tr><td>3. Systems design</td><td>Technical specifications</td><td>Configure modules, reorder rules, supplier scorecards and approval workflows. Freeze scope to prevent <strong>scope creep</strong>.</td></tr>
+          <tr><td>4. Programming &amp; testing</td><td>Tested system</td><td>Limited coding (integrations only). Test with real WHSS data: suppliers, items, bills of materials, open orders.</td></tr>
+          <tr><td>5. Implementation</td><td>Working system</td><td>Convert from the old tools (see conversion strategies below) and train users.</td></tr>
+          <tr><td>6. Operation &amp; maintenance</td><td>Ongoing support</td><td>All three kinds of maintenance: <em>debugging</em> (fixing errors found after go-live), <em>updating</em> (new tax rates, new suppliers, vendor releases) and <em>adding</em> features, such as AI demand forecasting later.</td></tr>
+        </tbody>
+      </table></div>
+      <h3>Who is involved, and when</h3>
+      <p>Figure 13.5 in the chapter shows that user and developer involvement shift over the SDLC: users are most involved at the start (investigation and analysis) and again at the end (implementation and operation), while developers dominate the middle (design, programming and testing).<span class="src"><a href="#research--ref-1">[1]</a></span> The chapter also names the people involved: systems analysts, programmers, technical specialists and other stakeholders.<span class="src"><a href="#research--ref-1">[1]</a></span></p>
+      <svg viewBox="0 0 640 230" role="img" aria-label="Line chart: user involvement is high at investigation and analysis, low during programming and testing, and high again at implementation and operation; developer involvement is the reverse" style="width:100%;max-width:640px;display:block;margin:8px 0">
+        <g font-family="system-ui,sans-serif" font-size="11.5" fill="#4a5565">
+          <line x1="60" y1="170" x2="620" y2="170" stroke="#9aa3af"/>
+          <text x="34" y="100" text-anchor="middle" transform="rotate(-90 34 100)">Involvement</text>
+          <text x="105" y="188" text-anchor="middle">Investigation</text><text x="195" y="188" text-anchor="middle">Analysis</text><text x="285" y="188" text-anchor="middle">Design</text><text x="375" y="188" text-anchor="middle">Programming</text><text x="465" y="188" text-anchor="middle">Implementation</text><text x="565" y="188" text-anchor="middle">Operation</text>
+          <polyline points="105,40 195,55 285,105 375,145 465,70 565,45" fill="none" stroke="#f5a524" stroke-width="2.5"/>
+          <polyline points="105,140 195,110 285,55 375,40 465,95 565,130" fill="none" stroke="#2563c9" stroke-width="2.5"/>
+          <g fill="#f5a524"><circle cx="105" cy="40" r="4"/><circle cx="195" cy="55" r="4"/><circle cx="285" cy="105" r="4"/><circle cx="375" cy="145" r="4"/><circle cx="465" cy="70" r="4"/><circle cx="565" cy="45" r="4"/></g>
+          <g fill="#2563c9"><circle cx="105" cy="140" r="4"/><circle cx="195" cy="110" r="4"/><circle cx="285" cy="55" r="4"/><circle cx="375" cy="40" r="4"/><circle cx="465" cy="95" r="4"/><circle cx="565" cy="130" r="4"/></g>
+          <rect x="70" y="205" width="12" height="4" fill="#f5a524"/><text x="88" y="210" fill="#1b2430">Users (WHSS staff)</text>
+          <rect x="220" y="205" width="12" height="4" fill="#2563c9"/><text x="238" y="210" fill="#1b2430">Developers / vendor &amp; implementation partner</text>
+          <text x="620" y="224" text-anchor="end" font-size="10.5" fill="#6b7584">Illustrative shape, based on Rainer &amp; Prince, Figure 13.5</text>
+        </g>
+      </svg>
+      <div class="interp"><b class="lbl">Our analysis</b>For WHSS this means buyers, planners and warehouse leads must be booked into the project at the <em>start</em> (requirements) and the <em>end</em> (testing with real data, training, go-live). In the middle, the vendor and implementation partner do most of the work. The most common mistake is letting users disappear during the middle and then rejecting the system at go-live.</div>
+      <h3>Choosing a conversion strategy</h3>
+      <div class="table-wrap"><table>
+        <thead><tr><th>Strategy</th><th>How it works</th><th>Risk</th><th>Fit for WHSS</th></tr></thead>
+        <tbody>
+          <tr><td>Direct</td><td>Old system off, new system on, same day</td><td>Highest</td><td class="fit-low">Avoid</td></tr>
+          <tr><td>Pilot</td><td>New system used in one part of the business first</td><td>Low</td><td class="fit-high">Recommended: start with procurement for one product family</td></tr>
+          <tr><td>Phased</td><td>Introduced module by module</td><td>Medium</td><td class="fit-high">Recommended after the pilot: procurement → inventory → sales orders</td></tr>
+          <tr><td>Parallel</td><td>Old and new run side by side</td><td>Lowest, but costly</td><td class="fit-med">Only for financial data during cut-over</td></tr>
+        </tbody>
+      </table></div>
+      <p><strong>A Canadian warning:</strong> the federal government's Phoenix pay system shows what happens when implementation shortcuts are taken. Phoenix was meant to replace a 40-year-old federal pay system. In its 2018 audit, the Office of the Auditor General of Canada concluded that the project was an incomprehensible failure of project management and oversight, and found that a planned pilot in one department had been cancelled before the system went live.<span class="src"><a href="#research--ref-7">[7]</a></span> By October 2022, The Canadian Press reported that Phoenix had cost the government more than $2.1 billion.<span class="src"><a href="#research--ref-13">[13]</a></span> In March 2026, the Auditor General reported that replacing Phoenix with a new system (Dayforce) was estimated at over $4.2 billion, and called that estimate rough.<span class="src"><a href="#research--ref-8">[8]</a></span></p>
+      <div class="interp"><b class="lbl">Our analysis</b>Phoenix is the direct-conversion risk at national scale. For WHSS the lesson is cheap to apply: <strong>pilot first, and set a clear go-live test</strong> (for example, two weeks of POs with no errors) before expanding.</div>
+
+      <h2 id="r-methods">8. Alternative development methods &amp; tools</h2>
+      <p>Chapter 13 also covers faster methods: <strong>joint application design (JAD)</strong>, <strong>rapid application development (RAD)</strong>, <strong>Agile</strong>, <strong>DevOps</strong> and <strong>end-user development</strong>. It lists tools such as design thinking, prototyping, CASE tools, component-based development, containers and <strong>low-code platforms</strong>.<span class="src"><a href="#research--ref-1">[1]</a></span></p>
+      <h3>Development methods</h3>
+      <div class="table-wrap"><table>
+        <thead><tr><th>Method</th><th>What it is</th><th>How WHSS would use it</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Joint application design (JAD)</strong></td><td>A group workshop where users and analysts agree on requirements together, instead of separate interviews.</td><td>One or two workshops with purchasing, production, warehouse and sales staff to set reorder rules and approval steps.</td></tr>
+          <tr><td><strong>Rapid application development (RAD)</strong></td><td>Builds working versions quickly and refines them with user review in short cycles (Figure 13.6).</td><td>Configure a working procurement screen in the pilot, let buyers try it, adjust, repeat.</td></tr>
+          <tr><td><strong>Agile development</strong></td><td>Delivers the system in small, usable pieces over short iterations, with priorities reset after each one.</td><td>Two-week sprints: supplier scorecard first, then reorder alerts, then order promising.</td></tr>
+          <tr><td><strong>DevOps</strong></td><td>Development and operations teams work together so changes are tested and released continuously.</td><td>Mostly handled by the SaaS vendor, which releases updates on a regular cycle. WHSS tests its own integrations (web store, carriers) after each release.</td></tr>
+          <tr><td><strong>End-user development</strong></td><td>Business users build their own small applications or reports.</td><td>Planners build their own inventory reports. The risk is uncontrolled "shadow" apps, so IT should review anything that touches customer data.</td></tr>
+        </tbody>
+      </table></div>
+      <h3>Development tools</h3>
+      <div class="table-wrap"><table>
+        <thead><tr><th>Tool</th><th>What it is</th><th>Relevance to WHSS</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Design thinking</strong></td><td>A human-centred approach: understand the user's problem first, then design and test solutions.</td><td>Watch how an installer actually reorders stock before designing the Partner Portal.</td></tr>
+          <tr><td><strong>Prototyping</strong></td><td>Show users a working model early and improve it based on feedback.</td><td>How we built this website (section 10).</td></tr>
+          <tr><td><strong>CASE tools</strong></td><td>Computer-aided software engineering. <em>Upper</em> CASE supports investigation, analysis and design; <em>lower</em> CASE supports programming, testing and maintenance.</td><td>Mainly the vendor's concern; WHSS might use diagramming (upper CASE) to map its processes.</td></tr>
+          <tr><td><strong>Component-based development</strong></td><td>Assembles applications from ready-made, reusable parts.</td><td>Use the vendor's standard connectors for Canada Post, UPS and the web store instead of writing new code.</td></tr>
+          <tr><td><strong>Object-oriented development</strong></td><td>Models a system as objects (e.g., Supplier, Item, Order) that combine data and behaviour.</td><td>The WHSS dataset already maps to objects: Supplier, Item, Purchase Order, Sales Order.</td></tr>
+          <tr><td><strong>Containers</strong></td><td>Package an application with everything it needs so it runs the same on any server or cloud.</td><td>Relevant only if WHSS chose self-hosted open-source software instead of SaaS.</td></tr>
+          <tr><td><strong>Low-code platforms</strong></td><td>Build applications through visual tools with little hand-written code.</td><td>Small add-ons such as a returns-tracking app or an installer order form, without hiring developers.</td></tr>
+        </tbody>
+      </table></div>
+      <p>Low-code is growing quickly. Gartner forecast the worldwide low-code development technologies market at US$26.9 billion for 2023, and predicted that by 2026 developers outside formal IT departments would make up at least 80% of low-code tool users.<span class="src"><a href="#research--ref-11">[11]</a></span> That supports the chapter's point about end-user development, and its risk.</p>
+      <h3>The GoDaddy case (IT's About Business 13.1)</h3>
+      <p>The chapter's GoDaddy case asks about building AI tools in-house and pausing other projects to do it.<span class="src"><a href="#research--ref-1">[1]</a></span> GoDaddy paused all other engineering work for a six-week AI "surge" that produced about 30 new customer features for its Airo platform. It used a mix of homegrown and third-party AI technology, including Amazon Web Services' Bedrock platform.<span class="src"><a href="#research--ref-5">[5]</a></span></p>
+      <div class="interp"><b class="lbl">Our analysis: answering the case questions for WHSS</b>
+        <strong>In-house vs. third-party:</strong> GoDaddy is a large technology company for which AI is a core product, so building in-house made sense. WHSS is a hardware assembler with no large engineering team, so its advantages and risks run the other way: it should buy or lease.<br>
+        <strong>Pausing other work:</strong> GoDaddy could pause projects because it had many engineers and a clear strategic priority. WHSS should not freeze operations. Its "surge" should be a time-boxed pilot with a small team.<br>
+        <strong>Short-term sacrifice vs. long-term gain:</strong> WHSS accepts short-term costs (implementation fees, training time) for long-term gains (better OTIF, fewer stockouts), as long as the gains are tracked against the business case.</div>
+
+      <h2 id="r-risks">9. Risks &amp; trade-offs</h2>
+      <div class="table-wrap"><table>
+        <thead><tr><th>Risk</th><th>Why it matters</th><th>How WHSS reduces it</th></tr></thead>
+        <tbody>
+          <tr><td>Project failure / missed benefits</td><td>Gartner predicts that by 2027, more than 70% of recently implemented ERP initiatives will fail to fully meet their original business goals, and names weak alignment with strategy and poor stakeholder engagement among the causes.<span class="src"><a href="#research--ref-12">[12]</a></span></td><td>Clear business case (section 4), executive sponsor, training before and after go-live</td></tr>
+          <tr><td>Vendor lock-in &amp; control</td><td>With purchased or leased software, the company does not control improvements, and the vendor may change or discontinue the product.<span class="src"><a href="#research--ref-1">[1]</a></span></td><td>Contract terms for data export; choose a vendor with an open-source fallback</td></tr>
+          <tr><td>Scope creep</td><td>Requirements grow during design, raising cost and delaying launch.<span class="src"><a href="#research--ref-1">[1]</a></span></td><td>Freeze phase-1 scope; log new requests for phase 2</td></tr>
+          <tr><td>Data quality during migration</td><td>Bad item, BOM or supplier data produces bad reorder suggestions.</td><td>Clean master data before go-live; test using real WHSS records</td></tr>
+          <tr><td>Privacy &amp; security</td><td>A cloud vendor will hold customer and possibly video-related data. Ring's FTC case shows the cost of weak access controls.<span class="src"><a href="#research--ref-6">[6]</a></span></td><td>Security and data-residency clauses in the contract; follow the Privacy Commissioner's guidance for connected-device makers<span class="src"><a href="#research--ref-10">[10]</a></span></td></tr>
+          <tr><td>Currency exposure</td><td>Many SaaS vendors bill in US dollars, and WHSS already faces FX risk on imported electronics.<span class="src"><a href="#research--ref-2">[2]</a></span></td><td>Negotiate CAD pricing or a multi-year rate lock</td></tr>
+        </tbody>
+      </table></div>
+
+      <h2 id="r-site">10. This website as a Chapter 13 case</h2>
+      <p>Building this prototype was itself a small systems acquisition, and we followed the chapter's concepts:</p>
+      <ul>
+        <li><strong>Build vs. buy:</strong> we custom-built the site in HTML, CSS and JavaScript because the course asks for a functional prototype. For a real launch, WHSS would more likely <em>lease</em> a SaaS e-commerce platform, for the same reasons given in section 6.</li>
+        <li><strong>Prototyping / RAD:</strong> we built working versions of key screens first (kit builder, order tracking), reviewed them as a group, and refined them in short iterations. This is the iterative cycle the chapter contrasts with the traditional SDLC.</li>
+        <li><strong>SDLC stages:</strong> <em>investigation</em> (what does WHSS need?), <em>analysis</em> (customer journey and data available), <em>design</em> (page structure), <em>programming &amp; testing</em> (every link, form and lookup tested on desktop and mobile), <em>implementation</em> (publishing) and <em>maintenance</em> (updates after feedback).</li>
+        <li><strong>Using real data:</strong> the order tracker and Partner Portal read the WHSS dataset. This shows how a website becomes a front end to transaction and decision-support systems.</li>
+      </ul>
+
+      <h2 id="r-links">11. Links to other course chapters</h2>
+      <p class="muted small">Chapter numbers follow the Rainer &amp; Prince textbook's chapter structure.</p>
+      <ul>
+        <li><strong>Ch. 2, Organizational strategy &amp; competitive advantage:</strong> the IT plan must align with WHSS's strategy (section 3), and custom development is only worth it for a true competitive advantage (section 6).</li>
+        <li><strong>Ch. 3, Ethics &amp; privacy:</strong> home cameras collect sensitive personal information. The <a href="#privacy">Privacy &amp; Security page</a> applies PIPEDA principles.</li>
+        <li><strong>Ch. 4, Information security:</strong> encryption, two-step verification and least-privilege access are controls the new system and its vendor must support.</li>
+        <li><strong>Ch. 5, Data &amp; knowledge management:</strong> the WHSS dataset uses keys (SupplierID, ItemID, SO_ID) to join tables. An ERP puts these in one shared database.</li>
+        <li><strong>Ch. 10, Information systems within the organization:</strong> the kit builder is a transaction processing system (TPS), and the recommended system is an ERP.</li>
+        <li><strong>Ch. 11, Customer relationship &amp; supply chain management:</strong> the order tracker and supplier scorecard are SCM tools; the contact form reflects CRM case routing.</li>
+        <li><strong>Ch. 12, Business analytics:</strong> the Partner Portal dashboard and cost-benefit calculator are decision-support tools.</li>
+      </ul>
+
+      <h2 id="r-rec">12. Recommendation</h2>
+      <div class="card" style="border-left:5px solid var(--accent)">
+        <p style="margin-top:0"><strong>WHSS should lease a cloud ERP with supply chain and inventory modules (SaaS), configured rather than customized, and implemented through a pilot-then-phased rollout.</strong></p>
+        <ol style="margin-bottom:0">
+          <li><strong>Justify:</strong> present the business case with NPV, ROI and break-even, stressing that it stays positive at about 40% of estimated benefits.</li>
+          <li><strong>Select:</strong> shortlist 2–3 SaaS vendors. Require Canadian data hosting, data export rights and CAD pricing.</li>
+          <li><strong>Pilot:</strong> start with procurement for the camera product line, where the China-based suppliers create the most delay.</li>
+          <li><strong>Phase:</strong> add inventory reorder rules, then sales-order promising and carrier tracking.</li>
+          <li><strong>Measure:</strong> track on-time receipts, OTIF and stockouts monthly against today's baseline (27.8%, 13.3% and 54.5%).</li>
+        </ol>
+      </div>
+
+      <h2 id="r-refs">References</h2>
+      <ol class="refs">
+        <li id="ref-1">Rainer, R. K., &amp; Prince, B. (2026). <em>Introduction to information systems</em> (11th ed.), Chapter 13: Acquiring information systems and applications . John Wiley &amp; Sons. Also: Chapter 13 lecture slides, including IT's About Business 13.1 (GoDaddy).</li>
+        <li id="ref-2">Windsor Home Security Systems. (2026). <em>WHSS_Data.xlsx</em>: Company profile; procurement, production and fulfillment datasets (Oct. 2025 – Feb. 2026) [Course dataset].</li>
+        <li id="ref-3">Statistics Canada. (2024, September 17). <em>Survey of Digital Technology and Internet Use, 2023</em>. The Daily. <a href="https://www150.statcan.gc.ca/n1/daily-quotidien/240917/dq240917c-eng.htm" target="_blank" rel="noopener">https://www150.statcan.gc.ca/n1/daily-quotidien/240917/dq240917c-eng.htm</a></li>
+        <li id="ref-4">Canadian Federation of Independent Business. (2025, September 29). <em>Digital adoption including AI paying off for SMEs, but gaps remain</em>. <a href="https://www.cfib-fcei.ca/en/media/digital-adoption-including-ai-paying-off-for-smes-but-gaps-remain" target="_blank" rel="noopener">https://www.cfib-fcei.ca/en/media/digital-adoption-including-ai-paying-off-for-smes-but-gaps-remain</a></li>
+        <li id="ref-5">GeekWire. (2024). <em>GoDaddy launches new Airo tools, betting on AI to unlock business growth</em>. <a href="https://www.geekwire.com/2024/godaddy-launches-new-airo-tools-betting-on-ai-to-unlock-business-growth/" target="_blank" rel="noopener">https://www.geekwire.com/2024/godaddy-launches-new-airo-tools-betting-on-ai-to-unlock-business-growth/</a></li>
+        <li id="ref-6">U.S. Federal Trade Commission. (2024, April 23). <em>FTC sends refunds to Ring customers stemming from 2023 settlement over charges the company failed to block employees and hackers from accessing consumer videos</em> [Press release]. <a href="https://www.ftc.gov/news-events/news/press-releases/2024/04/ftc-sends-refunds-ring-customers-stemming-2023-settlement-over-charges-company-failed-block" target="_blank" rel="noopener">https://www.ftc.gov/news-events/news/press-releases/2024/04/ftc-sends-refunds-ring-customers-stemming-2023-settlement-over-charges-company-failed-block</a></li>
+        <li id="ref-7">Office of the Auditor General of Canada. (2018). <em>Report 1—Building and implementing the Phoenix pay system</em> (2018 Spring Reports of the Auditor General of Canada to the Parliament of Canada). <a href="https://www.oag-bvg.gc.ca/internet/English/parl_oag_201805_01_e_43033.html" target="_blank" rel="noopener">https://www.oag-bvg.gc.ca/internet/English/parl_oag_201805_01_e_43033.html</a></li>
+        <li id="ref-8">The Canadian Press. (2026, March 23). <em>Phoenix backlog needs to be cleared to avoid errors in new system: AG report</em>. iNFOnews. <a href="https://infonews.ca/?p=7591397" target="_blank" rel="noopener">https://infonews.ca/?p=7591397</a></li>
+        <li id="ref-9">Odoo S.A. (2026). <em>Pricing</em>. <a href="https://odoo.com/pricing" target="_blank" rel="noopener">https://odoo.com/pricing</a></li>
+        <li id="ref-10">Office of the Privacy Commissioner of Canada. (2020). <em>Privacy guidance for manufacturers of Internet of Things devices</em>. <a href="https://www.priv.gc.ca/en/privacy-topics/technology/gd_iot_man/" target="_blank" rel="noopener">https://www.priv.gc.ca/en/privacy-topics/technology/gd_iot_man/</a></li>
+        <li id="ref-11">Gartner, Inc. (2022, December 13). <em>Gartner forecasts worldwide low-code development technologies market to grow 20% in 2023</em> [Press release]. <a href="https://www.gartner.com/en/newsroom/press-releases/2022-12-13-gartner-forecasts-worldwide-low-code-development-technologies-market-to-grow-20-percent-in-2023" target="_blank" rel="noopener">https://www.gartner.com/en/newsroom/press-releases/2022-12-13-gartner-forecasts-worldwide-low-code-development-technologies-market-to-grow-20-percent-in-2023</a></li>
+        <li id="ref-12">Gartner, Inc. (2024). <em>What IT leaders must do to avoid disappointing ERP initiatives</em>. <a href="https://www.gartner.com/en/information-technology/insights/what-it-leaders-must-do-to-avoid-disappointing-erp-initiatives" target="_blank" rel="noopener">https://www.gartner.com/en/information-technology/insights/what-it-leaders-must-do-to-avoid-disappointing-erp-initiatives</a></li>
+        <li id="ref-13">The Canadian Press. (2022, October 27). Phoenix system overpaid bureaucrats by $500M — now it's time to claw that back: watchdog. <em>Global News</em>. <a href="https://globalnews.ca/news/9231644/phoenix-pay-system-auditor-general" target="_blank" rel="noopener">https://globalnews.ca/news/9231644/phoenix-pay-system-auditor-general</a></li>
+      </ol>
+    </article>
+  </div>
+</section>
+
+</main>
+
+<footer class="site">
+  <div class="wrap">
+    <div class="grid g4">
+      <div><h4>WHSS</h4><p style="margin:0">Windsor Home Security Systems<br>Windsor, Ontario, Canada</p></div>
+      <div><h4>Shop</h4><ul><li><a href="#products">Products</a></li><li><a href="#plans">Monitoring plans</a></li><li><a href="#quote">Build a kit</a></li></ul></div>
+      <div><h4>Support</h4><ul><li><a href="#track">Track order</a></li><li><a href="#contact">Contact</a></li><li><a href="#privacy">Privacy &amp; security</a></li></ul></div>
+      <div><h4>Business &amp; research</h4><ul><li><a href="#portal">Partner portal</a></li><li><a href="#about">About</a></li><li><a href="#research">Research: Chapter 13</a></li></ul></div>
+    </div>
+    <div class="foot-bottom">MIS group project prototype · WHSS is a fictional company used for coursework · Simulated features are labelled "Demo" · Data: WHSS course dataset (Oct 2025 – Feb 2026)</div>
+  </div>
+</footer>
+<div class="tooltip" id="tip" role="tooltip"></div>
+
+<script>
+const DATA = {"orders":{"SO-CA-00001":{"seg":"D2C","city":"Montreal","prov":"NS","st":"Delivered","od":"2026-01-01","pd":"2026-01-02","sd":"2026-01-05","dd":"2026-01-06","car":"UPS","svc":"Ground","val":169.0,"otif":0,"items":[["Outdoor Camera Kit",1,1]]},"SO-CA-00002":{"seg":"D2C","city":"Windsor","prov":"ON","st":"Delivered","od":"2026-01-19","pd":"2026-01-21","sd":"2026-01-21","dd":"2026-01-23","car":"Canada Post","svc":"Express","val":174.55,"otif":1,"items":[["Indoor Camera Kit",1,1],["Smart Siren",1,1]]},"SO-CA-00003":{"seg":"Installer","city":"Hamilton","prov":"NB","st":"Shipped","od":"2025-10-15","pd":"2025-10-20","sd":"2025-10-20","dd":"2025-10-24","car":"Purolator","svc":"Ground","val":996.02,"otif":0,"items":[["Door/Window Sensor 2-pack",7,7],["Indoor Camera Kit",8,8]]},"SO-CA-00004":{"seg":"Retail","city":"Toronto","prov":"ON","st":"Delivered","od":"2026-02-04","pd":"2026-02-08","sd":"2026-02-08","dd":"2026-02-10","car":"Canada Post","svc":"Ground","val":195.65,"otif":1,"items":[["Door/Window Sensor 2-pack",5,5]]},"SO-CA-00005":{"seg":"D2C","city":"Halifax","prov":"ON","st":"Shipped","od":"2026-02-22","pd":"2026-02-25","sd":"2026-02-28","dd":"2026-03-04","car":"Purolator","svc":"Ground","val":109.0,"otif":0,"items":[["Indoor Camera Kit",1,1],["Door/Window Sensor 2-pack",1,0]]},"SO-CA-00006":{"seg":"Installer","city":"London","prov":"ON","st":"Delivered","od":"2026-02-17","pd":"2026-02-21","sd":"2026-02-21","dd":"2026-02-24","car":"Canada Post","svc":"Ground","val":1112.88,"otif":1,"items":[["Outdoor Camera Kit",8,8]]},"SO-CA-00007":{"seg":"Installer","city":"Halifax","prov":"ON","st":"Delivered","od":"2026-01-24","pd":"2026-01-31","sd":"2026-01-31","dd":"2026-02-04","car":"Purolator","svc":"Ground","val":428.68,"otif":0,"items":[["Indoor Camera Kit",4,4],["Motion Sensor",2,2]]},"SO-CA-00008":{"seg":"Installer","city":"Windsor","prov":"NB","st":"Delivered","od":"2025-11-24","pd":"2025-11-28","sd":"2025-12-01","dd":"2025-12-02","car":"Purolator","svc":"Ground","val":454.2,"otif":0,"items":[["Smart Siren",6,6],["Smart Siren",2,2]]},"SO-CA-00009":{"seg":"Installer","city":"Halifax","prov":"NS","st":"Delivered","od":"2025-10-20","pd":"2025-10-27","sd":"2025-10-28","dd":"2025-10-29","car":"Canada Post","svc":"Standard","val":216.16,"otif":0,"items":[["Smart Siren",5,4]]},"SO-CA-00010":{"seg":"D2C","city":"Toronto","prov":"ON","st":"Delivered","od":"2025-11-11","pd":"2025-11-12","sd":"2025-11-15","dd":"2025-11-18","car":"Purolator","svc":"Ground","val":507.0,"otif":0,"items":[["Outdoor Camera Kit",1,1],["Outdoor Camera Kit",2,2]]},"SO-CA-00011":{"seg":"D2C","city":"Toronto","prov":"AB","st":"Delivered","od":"2025-12-18","pd":"2025-12-21","sd":"2025-12-21","dd":"2025-12-26","car":"Canada Post","svc":"Standard","val":189.05,"otif":0,"items":[["Sentinel Hub (CA Edition)",1,1]]},"SO-CA-00012":{"seg":"Retail","city":"Calgary","prov":"QC","st":"Delivered","od":"2025-12-02","pd":"2025-12-09","sd":"2025-12-11","dd":"2025-12-12","car":"Canada Post","svc":"Ground","val":1612.92,"otif":0,"items":[["Outdoor Camera Kit",12,12]]},"SO-CA-00013":{"seg":"Installer","city":"Halifax","prov":"ON","st":"Shipped","od":"2025-12-02","pd":"2025-12-08","sd":"2025-12-08","dd":"2025-12-13","car":"Canada Post","svc":"Ground","val":622.92,"otif":0,"items":[["Door/Window Sensor 2-pack",6,6],["Door/Window Sensor 2-pack",9,9]]},"SO-CA-00014":{"seg":"Retail","city":"Toronto","prov":"MB","st":"Delivered","od":"2026-01-23","pd":"2026-01-29","sd":"2026-01-29","dd":"2026-02-02","car":"FedEx","svc":"Ground","val":1135.44,"otif":0,"items":[["Door/Window Sensor 2-pack",9,9],["Smart Siren",16,16]]},"SO-CA-00015":{"seg":"Installer","city":"Calgary","prov":"MB","st":"Delivered","od":"2025-12-17","pd":"2025-12-20","sd":"2025-12-22","dd":"2025-12-24","car":"Canada Post","svc":"Express","val":1044.74,"otif":0,"items":[["Indoor Camera Kit",6,6],["Door/Window Sensor 2-pack",8,8],["Door/Window Sensor 2-pack",4,4]]},"SO-CA-00016":{"seg":"Retail","city":"Vancouver","prov":"ON","st":"Delivered","od":"2025-10-26","pd":"2025-11-01","sd":"2025-11-01","dd":"2025-11-05","car":"Purolator","svc":"Ground","val":1732.41,"otif":0,"items":[["Sentinel Hub (CA Edition)",11,10],["Motion Sensor",7,7]]},"SO-CA-00017":{"seg":"Retail","city":"Vancouver","prov":"ON","st":"Delivered","od":"2026-01-07","pd":"2026-01-14","sd":"2026-01-16","dd":"2026-01-18","car":"Canada Post","svc":"Ground","val":1439.01,"otif":0,"items":[["Sentinel Hub (CA Edition)",9,9]]},"SO-CA-00018":{"seg":"Installer","city":"London","prov":"ON","st":"Delivered","od":"2025-11-10","pd":"2025-11-15","sd":"2025-11-17","dd":"2025-11-19","car":"UPS","svc":"Ground","val":265.22,"otif":0,"items":[["Smart Siren",2,2],["Door/Window Sensor 2-pack",4,4]]},"SO-CA-00019":{"seg":"Installer","city":"Windsor","prov":"NB","st":"Shipped","od":"2025-12-07","pd":"2025-12-14","sd":"2025-12-14","dd":"2025-12-15","car":"Purolator","svc":"Ground","val":2404.84,"otif":0,"items":[["Outdoor Camera Kit",4,4],["Sentinel Hub (CA Edition)",12,12]]},"SO-CA-00020":{"seg":"D2C","city":"Toronto","prov":"AB","st":"Delivered","od":"2025-10-13","pd":"2025-10-15","sd":"2025-10-16","dd":"2025-10-20","car":"UPS","svc":"Ground","val":169.0,"otif":0,"items":[["Outdoor Camera Kit",1,1]]},"SO-CA-00021":{"seg":"D2C","city":"Halifax","prov":"ON","st":"Delivered","od":"2026-01-13","pd":"2026-01-15","sd":"2026-01-15","dd":"2026-01-19","car":"FedEx","svc":"Ground","val":93.1,"otif":0,"items":[["Door/Window Sensor 2-pack",2,2]]},"SO-CA-00022":{"seg":"D2C","city":"Toronto","prov":"ON","st":"Delivered","od":"2025-10-06","pd":"2025-10-08","sd":"2025-10-10","dd":"2025-10-13","car":"Canada Post","svc":"Ground","val":148.0,"otif":0,"items":[["Motion Sensor",1,1],["Indoor Camera Kit",1,1]]},"SO-CA-00023":{"seg":"D2C","city":"Halifax","prov":"ON","st":"Delivered","od":"2025-11-25","pd":"2025-11-28","sd":"2025-11-28","dd":"2025-12-02","car":"Purolator","svc":"Ground","val":83.6,"otif":0,"items":[["Motion Sensor",1,1],["Door/Window Sensor 2-pack",1,1]]},"SO-CA-00024":{"seg":"Installer","city":"Vancouver","prov":"ON","st":"Delivered","od":"2025-12-22","pd":"2025-12-27","sd":"2025-12-28","dd":"2025-12-31","car":"Canpar","svc":"Ground","val":231.77,"otif":0,"items":[["Motion Sensor",8,7]]},"SO-CA-00025":{"seg":"Installer","city":"Halifax","prov":"ON","st":"Delivered","od":"2025-12-10","pd":"2025-12-15","sd":"2025-12-18","dd":"2025-12-23","car":"FedEx","svc":"Ground","val":666.82,"otif":0,"items":[["Indoor Camera Kit",7,7]]},"SO-CA-00026":{"seg":"D2C","city":"Winnipeg","prov":"AB","st":"Delivered","od":"2025-12-24","pd":"2025-12-25","sd":"2025-12-26","dd":"2025-12-27","car":"Canada Post","svc":"Ground","val":228.05,"otif":1,"items":[["Motion Sensor",1,1],["Sentinel Hub (CA Edition)",1,1]]},"SO-CA-00027":{"seg":"D2C","city":"Windsor","prov":"ON","st":"Delivered","od":"2025-10-27","pd":"2025-10-28","sd":"2025-10-28","dd":"2025-11-01","car":"Canada Post","svc":"Ground","val":183.1,"otif":0,"items":[["Motion Sensor",2,2],["Indoor Camera Kit",1,1]]},"SO-CA-00028":{"seg":"Retail","city":"London","prov":"ON","st":"Delivered","od":"2026-01-19","pd":"2026-01-24","sd":"2026-01-24","dd":"2026-01-26","car":"Canada Post","svc":"Standard","val":3943.12,"otif":1,"items":[["Indoor Camera Kit",14,14],["Sentinel Hub (CA Edition)",11,11],["Sentinel Hub (CA Edition)",6,6]]},"SO-CA-00029":{"seg":"Installer","city":"Hamilton","prov":"NB","st":"Delivered","od":"2025-11-01","pd":"2025-11-06","sd":"2025-11-06","dd":"2025-11-08","car":"Canpar","svc":"Ground","val":1191.26,"otif":0,"items":[["Sentinel Hub (CA Edition)",5,5],["Sentinel Hub (CA Edition)",2,2]]},"SO-CA-00030":{"seg":"Installer","city":"Toronto","prov":"QC","st":"Delivered","od":"2026-01-11","pd":"2026-01-18","sd":"2026-01-19","dd":"2026-01-22","car":"UPS","svc":"Ground","val":1785.93,"otif":0,"items":[["Indoor Camera Kit",13,13],["Indoor Camera Kit",6,6]]},"SO-CA-00031":{"seg":"D2C","city":"Hamilton","prov":"ON","st":"Delivered","od":"2025-10-30","pd":"2025-10-31","sd":"2025-11-02","dd":"2025-11-05","car":"Purolator","svc":"Express","val":37.05,"otif":0,"items":[["Motion Sensor",1,1]]},"SO-CA-00032":{"seg":"Installer","city":"Hamilton","prov":"ON","st":"Shipped","od":"2025-10-30","pd":"2025-11-05","sd":"2025-11-05","dd":"2025-11-06","car":"Canada Post","svc":"Ground","val":1139.0,"otif":0,"items":[["Indoor Camera Kit",10,10],["Door/Window Sensor 2-pack",5,5]]},"SO-CA-00033":{"seg":"D2C","city":"Halifax","prov":"ON","st":"Delivered","od":"2025-11-19","pd":"2025-11-21","sd":"2025-11-23","dd":"2025-11-26","car":"Canada Post","svc":"Ground","val":268.0,"otif":0,"items":[["Smart Siren",1,1],["Sentinel Hub (CA Edition)",1,1]]},"SO-CA-00034":{"seg":"D2C","city":"London","prov":"ON","st":"Delivered","od":"2025-10-12","pd":"2025-10-13","sd":"2025-10-14","dd":"2025-10-19","car":"FedEx","svc":"Ground","val":46.55,"otif":0,"items":[["Door/Window Sensor 2-pack",1,1]]},"SO-CA-00035":{"seg":"D2C","city":"Ottawa","prov":"NB","st":"Delivered","od":"2025-12-14","pd":"2025-12-15","sd":"2025-12-15","dd":"2025-12-19","car":"Canada Post","svc":"Ground","val":93.1,"otif":0,"items":[["Door/Window Sensor 2-pack",2,2]]},"SO-CA-00036":{"seg":"D2C","city":"Winnipeg","prov":"BC","st":"Delivered","od":"2026-01-31","pd":"2026-02-03","sd":"2026-02-03","dd":"2026-02-04","car":"Purolator","svc":"Express","val":216.15,"otif":0,"items":[["Motion Sensor",1,1],["Sentinel Hub (CA Edition)",1,1]]},"SO-CA-00037":{"seg":"D2C","city":"Montreal","prov":"QC","st":"Shipped","od":"2026-02-13","pd":"2026-02-14","sd":"2026-02-15","dd":"2026-02-18","car":"Purolator","svc":"Ground","val":229.55,"otif":0,"items":[["Smart Siren",1,1],["Outdoor Camera Kit",1,1]]},"SO-CA-00038":{"seg":"D2C","city":"Hamilton","prov":"ON","st":"Shipped","od":"2025-11-09","pd":"2025-11-10","sd":"2025-11-11","dd":"2025-11-13","car":"Purolator","svc":"Ground","val":0.0,"otif":0,"items":[["Smart Siren",1,0]]},"SO-CA-00039":{"seg":"D2C","city":"Windsor","prov":"ON","st":"Shipped","od":"2025-10-07","pd":"2025-10-09","sd":"2025-10-09","dd":"2025-10-13","car":"Canada Post","svc":"Ground","val":207.1,"otif":0,"items":[["Indoor Camera Kit",2,2]]},"SO-CA-00040":{"seg":"Installer","city":"Windsor","prov":"BC","st":"Delivered","od":"2025-11-29","pd":"2025-12-04","sd":"2025-12-04","dd":"2025-12-06","car":"UPS","svc":"Ground","val":67.18,"otif":1,"items":[["Motion Sensor",2,2]]},"SO-CA-00041":{"seg":"Retail","city":"Toronto","prov":"ON","st":"Shipped","od":"2026-01-13","pd":"2026-01-17","sd":"2026-01-17","dd":"2026-01-19","car":"UPS","svc":"Ground","val":2527.56,"otif":1,"items":[["Indoor Camera Kit",23,23],["Motion Sensor",8,8],["Door/Window Sensor 2-pack",12,12]]},"SO-CA-00042":{"seg":"D2C","city":"Montreal","prov":"ON","st":"Delivered","od":"2026-02-10","pd":"2026-02-12","sd":"2026-02-13","dd":"2026-02-15","car":"UPS","svc":"Standard","val":507.0,"otif":0,"items":[["Sentinel Hub (CA Edition)",2,2],["Indoor Camera Kit",1,1]]},"SO-CA-00043":{"seg":"Installer","city":"Vancouver","prov":"ON","st":"Delivered","od":"2025-10-23","pd":"2025-10-26","sd":"2025-10-30","dd":"2025-11-03","car":"Canada Post","svc":"Ground","val":663.68,"otif":0,"items":[["Sentinel Hub (CA Edition)",4,4]]},"SO-CA-00044":{"seg":"Installer","city":"Toronto","prov":"QC","st":"Delivered","od":"2025-12-27","pd":"2026-01-01","sd":"2026-01-02","dd":"2026-01-04","car":"Canada Post","svc":"Ground","val":264.72,"otif":0,"items":[["Motion Sensor",8,8]]},"SO-CA-00045":{"seg":"D2C","city":"Halifax","prov":"ON","st":"Delivered","od":"2026-01-03","pd":"2026-01-05","sd":"2026-01-05","dd":"2026-01-08","car":"Purolator","svc":"Ground","val":231.3,"otif":0,"items":[["Indoor Camera Kit",2,2],["Motion Sensor",1,1]]},"SO-CA-00046":{"seg":"Retail","city":"Hamilton","prov":"ON","st":"Delivered","od":"2026-02-17","pd":"2026-02-24","sd":"2026-02-26","dd":"2026-02-28","car":"Purolator","svc":"Ground","val":891.1,"otif":0,"items":[["Outdoor Camera Kit",7,7]]},"SO-CA-00047":{"seg":"D2C","city":"London","prov":"ON","st":"Shipped","od":"2025-11-25","pd":"2025-11-27","sd":"2025-11-27","dd":"2025-12-01","car":"Purolator","svc":"Ground","val":287.15,"otif":0,"items":[["Sentinel Hub (CA Edition)",1,1],["Indoor Camera Kit",1,1]]},"SO-CA-00048":{"seg":"Installer","city":"Halifax","prov":"AB","st":"Delivered","od":"2025-11-28","pd":"2025-12-03","sd":"2025-12-04","dd":"2025-12-08","car":"FedEx","svc":"Express","val":1230.75,"otif":0,"items":[["Outdoor Camera Kit",9,9]]},"SO-CA-00049":{"seg":"D2C","city":"London","prov":"ON","st":"Shipped","od":"2026-02-07","pd":"2026-02-08","sd":"2026-02-09","dd":"2026-02-11","car":"FedEx","svc":"Ground","val":438.75,"otif":0,"items":[["Smart Siren",1,1],["Smart Siren",1,1],["Outdoor Camera Kit",2,2]]},"SO-CA-00050":{"seg":"Retail","city":"Toronto","prov":"MB","st":"Delivered","od":"2025-10-26","pd":"2025-10-30","sd":"2025-10-30","dd":"2025-11-01","car":"UPS","svc":"Ground","val":3214.06,"otif":0,"items":[["Outdoor Camera Kit",23,23],["Motion Sensor",9,9]]},"SO-CA-00051":{"seg":"D2C","city":"Ottawa","prov":"NB","st":"Delivered","od":"2026-01-17","pd":"2026-01-19","sd":"2026-01-19","dd":"2026-01-22","car":"UPS","svc":"Express","val":368.0,"otif":0,"items":[["Sentinel Hub (CA Edition)",1,1],["Outdoor Camera Kit",1,1]]},"SO-CA-00052":{"seg":"Retail","city":"Toronto","prov":"MB","st":"Shipped","od":"2025-11-01","pd":"2025-11-04","sd":"2025-11-05","dd":"2025-11-08","car":"Canada Post","svc":"Standard","val":362.6,"otif":0,"items":[["Smart Siren",7,7]]},"SO-CA-00053":{"seg":"Installer","city":"Hamilton","prov":"NB","st":"Delivered","od":"2026-02-02","pd":"2026-02-05","sd":"2026-02-07","dd":"2026-02-12","car":"UPS","svc":"Ground","val":200.35,"otif":0,"items":[["Door/Window Sensor 2-pack",6,5]]},"SO-CA-00054":{"seg":"Installer","city":"Halifax","prov":"ON","st":"Delivered","od":"2025-10-20","pd":"2025-10-26","sd":"2025-10-28","dd":"2025-10-29","car":"FedEx","svc":"Ground","val":477.4,"otif":0,"items":[["Indoor Camera Kit",5,5]]},"SO-CA-00055":{"seg":"D2C","city":"Ottawa","prov":"ON","st":"Delivered","od":"2026-02-24","pd":"2026-02-27","sd":"2026-02-27","dd":"2026-02-28","car":"Purolator","svc":"Express","val":109.0,"otif":0,"items":[["Indoor Camera Kit",1,1]]},"SO-CA-00056":{"seg":"D2C","city":"London","prov":"QC","st":"Delivered","od":"2026-02-15","pd":"2026-02-18","sd":"2026-02-18","dd":"2026-02-22","car":"Canada Post","svc":"Ground","val":331.1,"otif":0,"items":[["Motion Sensor",1,1],["Door/Window Sensor 2-pack",2,2],["Sentinel Hub (CA Edition)",1,1]]},"SO-CA-00057":{"seg":"D2C","city":"Winnipeg","prov":"BC","st":"Delivered","od":"2025-10-15","pd":"2025-10-16","sd":"2025-10-16","dd":"2025-10-18","car":"Purolator","svc":"Ground","val":406.0,"otif":1,"items":[["Smart Siren",2,2],["Smart Siren",1,1],["Sentinel Hub (CA Edition)",1,1]]},"SO-CA-00058":{"seg":"D2C","city":"Windsor","prov":"ON","st":"Delivered","od":"2025-11-12","pd":"2025-11-15","sd":"2025-11-15","dd":"2025-11-16","car":"Canada Post","svc":"Standard","val":49.0,"otif":0,"items":[["Door/Window Sensor 2-pack",1,1]]},"SO-CA-00059":{"seg":"D2C","city":"Winnipeg","prov":"AB","st":"Delivered","od":"2026-02-19","pd":"2026-02-20","sd":"2026-02-20","dd":"2026-02-24","car":"Purolator","svc":"Standard","val":93.1,"otif":0,"items":[["Door/Window Sensor 2-pack",2,2]]},"SO-CA-00060":{"seg":"D2C","city":"Hamilton","prov":"ON","st":"Delivered","od":"2026-02-01","pd":"2026-02-04","sd":"2026-02-06","dd":"2026-02-10","car":"Purolator","svc":"Ground","val":178.0,"otif":0,"items":[["Indoor Camera Kit",1,1],["Smart Siren",1,1]]},"SO-CA-00061":{"seg":"D2C","city":"Calgary","prov":"BC","st":"Shipped","od":"2026-02-10","pd":"2026-02-11","sd":"2026-02-11","dd":"2026-02-13","car":"Purolator","svc":"Ground","val":456.0,"otif":1,"items":[["Sentinel Hub (CA Edition)",1,1],["Motion Sensor",1,1],["Indoor Camera Kit",2,2]]},"SO-CA-00062":{"seg":"D2C","city":"Vancouver","prov":"ON","st":"Delivered","od":"2025-12-10","pd":"2025-12-12","sd":"2025-12-14","dd":"2025-12-19","car":"FedEx","svc":"Standard","val":653.05,"otif":0,"items":[["Motion Sensor",1,1],["Sentinel Hub (CA Edition)",2,2],["Indoor Camera Kit",2,2]]},"SO-CA-00063":{"seg":"Installer","city":"Montreal","prov":"ON","st":"Delivered","od":"2025-12-10","pd":"2025-12-13","sd":"2025-12-15","dd":"2025-12-17","car":"UPS","svc":"Ground","val":209.0,"otif":0,"items":[["Door/Window Sensor 2-pack",5,5]]},"SO-CA-00064":{"seg":"Installer","city":"Vancouver","prov":"ON","st":"Shipped","od":"2025-10-01","pd":"2025-10-06","sd":"2025-10-07","dd":"2025-10-09","car":"Canada Post","svc":"Ground","val":1051.1,"otif":1,"items":[["Motion Sensor",4,4],["Outdoor Camera Kit",7,7]]},"SO-CA-00065":{"seg":"D2C","city":"Halifax","prov":"ON","st":"Delivered","od":"2026-01-17","pd":"2026-01-18","sd":"2026-01-20","dd":"2026-01-24","car":"UPS","svc":"Ground","val":212.55,"otif":0,"items":[["Indoor Camera Kit",1,1],["Indoor Camera Kit",1,1]]},"SO-CA-00066":{"seg":"Installer","city":"Windsor","prov":"BC","st":"Delivered","od":"2026-02-18","pd":"2026-02-25","sd":"2026-02-27","dd":"2026-03-03","car":"Purolator","svc":"Express","val":1138.64,"otif":0,"items":[["Outdoor Camera Kit",8,8]]},"SO-CA-00067":{"seg":"D2C","city":"Windsor","prov":"ON","st":"Delivered","od":"2025-12-22","pd":"2025-12-24","sd":"2025-12-25","dd":"2025-12-28","car":"Canpar","svc":"Express","val":90.65,"otif":0,"items":[["Door/Window Sensor 2-pack",1,1],["Door/Window Sensor 2-pack",1,1]]},"SO-CA-00068":{"seg":"D2C","city":"Ottawa","prov":"NB","st":"Delivered","od":"2025-12-26","pd":"2025-12-27","sd":"2025-12-27","dd":"2025-12-29","car":"Canada Post","svc":"Express","val":142.55,"otif":1,"items":[["Indoor Camera Kit",1,1],["Motion Sensor",1,1]]},"SO-CA-00069":{"seg":"D2C","city":"Toronto","prov":"ON","st":"Delivered","od":"2025-11-11","pd":"2025-11-14","sd":"2025-11-14","dd":"2025-11-16","car":"Canada Post","svc":"Ground","val":199.0,"otif":0,"items":[["Sentinel Hub (CA Edition)",1,1]]},"SO-CA-00070":{"seg":"Installer","city":"Winnipeg","prov":"ON","st":"Shipped","od":"2025-12-12","pd":"2025-12-16","sd":"2025-12-17","dd":"2025-12-18","car":"Purolator","svc":"Ground","val":527.04,"otif":0,"items":[["Indoor Camera Kit",6,6]]},"SO-CA-00071":{"seg":"Retail","city":"Toronto","prov":"ON","st":"Delivered","od":"2025-10-16","pd":"2025-10-23","sd":"2025-10-23","dd":"2025-10-25","car":"Purolator","svc":"Express","val":1008.08,"otif":0,"items":[["Motion Sensor",15,15],["Door/Window Sensor 2-pack",5,5],["Door/Window Sensor 2-pack",9,9]]},"SO-CA-00072":{"seg":"Installer","city":"London","prov":"ON","st":"Delivered","od":"2025-12-12","pd":"2025-12-16","sd":"2025-12-16","dd":"2025-12-19","car":"Purolator","svc":"Ground","val":761.0,"otif":1,"items":[["Motion Sensor",6,6],["Motion Sensor",2,2],["Smart Siren",9,9]]},"SO-CA-00073":{"seg":"Installer","city":"Vancouver","prov":"ON","st":"Delivered","od":"2026-01-01","pd":"2026-01-07","sd":"2026-01-07","dd":"2026-01-10","car":"Purolator","svc":"Ground","val":557.46,"otif":0,"items":[["Motion Sensor",2,2],["Motion Sensor",4,4],["Indoor Camera Kit",4,4]]},"SO-CA-00074":{"seg":"D2C","city":"Ottawa","prov":"ON","st":"Delivered","od":"2026-01-15","pd":"2026-01-16","sd":"2026-01-16","dd":"2026-01-18","car":"Canada Post","svc":"Ground","val":264.55,"otif":1,"items":[["Smart Siren",1,1],["Sentinel Hub (CA Edition)",1,1]]},"SO-CA-00075":{"seg":"Installer","city":"Winnipeg","prov":"ON","st":"Delivered","od":"2025-10-04","pd":"2025-10-11","sd":"2025-10-11","dd":"2025-10-14","car":"Purolator","svc":"Ground","val":1412.6,"otif":0,"items":[["Outdoor Camera Kit",10,10]]},"SO-CA-00076":{"seg":"Installer","city":"Hamilton","prov":"ON","st":"Delivered","od":"2025-11-13","pd":"2025-11-18","sd":"2025-11-21","dd":"2025-11-22","car":"Canpar","svc":"Ground","val":1253.12,"otif":0,"items":[["Sentinel Hub (CA Edition)",8,8]]},"SO-CA-00077":{"seg":"D2C","city":"Montreal","prov":"QC","st":"Shipped","od":"2026-01-30","pd":"2026-02-02","sd":"2026-02-02","dd":"2026-02-06","car":"Canada Post","svc":"Ground","val":278.0,"otif":0,"items":[["Outdoor Camera Kit",1,1],["Indoor Camera Kit",1,1]]},"SO-CA-00078":{"seg":"Installer","city":"Windsor","prov":"NB","st":"Delivered","od":"2026-02-20","pd":"2026-02-25","sd":"2026-02-26","dd":"2026-02-28","car":"Canada Post","svc":"Ground","val":2295.0,"otif":0,"items":[["Sentinel Hub (CA Edition)",3,3],["Sentinel Hub (CA Edition)",11,11]]},"SO-CA-00079":{"seg":"D2C","city":"Winnipeg","prov":"BC","st":"Delivered","od":"2026-02-16","pd":"2026-02-19","sd":"2026-02-19","dd":"2026-02-22","car":"Canada Post","svc":"Ground","val":196.65,"otif":0,"items":[["Door/Window Sensor 2-pack",2,2],["Indoor Camera Kit",1,1]]},"SO-CA-00080":{"seg":"D2C","city":"Toronto","prov":"ON","st":"Delivered","od":"2025-10-15","pd":"2025-10-17","sd":"2025-10-18","dd":"2025-10-20","car":"Canada Post","svc":"Ground","val":62.1,"otif":0,"items":[["Smart Siren",1,1]]},"SO-CA-00081":{"seg":"D2C","city":"Vancouver","prov":"ON","st":"Delivered","od":"2025-12-30","pd":"2026-01-01","sd":"2026-01-02","dd":"2026-01-03","car":"UPS","svc":"Ground","val":46.55,"otif":1,"items":[["Door/Window Sensor 2-pack",1,1]]},"SO-CA-00082":{"seg":"Retail","city":"Toronto","prov":"MB","st":"Delivered","od":"2025-12-11","pd":"2025-12-17","sd":"2025-12-19","dd":"2025-12-22","car":"FedEx","svc":"Ground","val":1714.2,"otif":0,"items":[["Indoor Camera Kit",20,20]]},"SO-CA-00083":{"seg":"D2C","city":"Windsor","prov":"ON","st":"Delivered","od":"2025-10-01","pd":"2025-10-02","sd":"2025-10-02","dd":"2025-10-04","car":"Canpar","svc":"Standard","val":37.05,"otif":1,"items":[["Motion Sensor",1,1]]},"SO-CA-00084":{"seg":"D2C","city":"Montreal","prov":"ON","st":"Delivered","od":"2026-01-19","pd":"2026-01-22","sd":"2026-01-22","dd":"2026-01-26","car":"Canpar","svc":"Ground","val":62.1,"otif":0,"items":[["Smart Siren",1,1]]},"SO-CA-00085":{"seg":"Installer","city":"Halifax","prov":"NS","st":"Delivered","od":"2025-11-04","pd":"2025-11-11","sd":"2025-11-11","dd":"2025-11-15","car":"UPS","svc":"Ground","val":280.26,"otif":0,"items":[["Indoor Camera Kit",3,3]]},"SO-CA-00086":{"seg":"D2C","city":"Toronto","prov":"ON","st":"Shipped","od":"2025-11-03","pd":"2025-11-04","sd":"2025-11-04","dd":"2025-11-06","car":"Canpar","svc":"Standard","val":327.05,"otif":0,"items":[["Smart Siren",2,2],["Sentinel Hub (CA Edition)",1,1]]},"SO-CA-00087":{"seg":"D2C","city":"Ottawa","prov":"ON","st":"Delivered","od":"2026-02-18","pd":"2026-02-21","sd":"2026-02-21","dd":"2026-02-25","car":"Purolator","svc":"Standard","val":292.1,"otif":0,"items":[["Sentinel Hub (CA Edition)",1,1],["Door/Window Sensor 2-pack",2,2]]},"SO-CA-00088":{"seg":"D2C","city":"Halifax","prov":"ON","st":"Shipped","od":"2025-10-07","pd":"2025-10-09","sd":"2025-10-09","dd":"2025-10-11","car":"FedEx","svc":"Ground","val":69.0,"otif":0,"items":[["Smart Siren",1,1]]},"SO-CA-00089":{"seg":"D2C","city":"Halifax","prov":"MB","st":"Delivered","od":"2026-02-14","pd":"2026-02-17","sd":"2026-02-17","dd":"2026-02-19","car":"Canada Post","svc":"Ground","val":215.55,"otif":0,"items":[["Door/Window Sensor 2-pack",1,1],["Outdoor Camera Kit",1,1]]},"SO-CA-00090":{"seg":"D2C","city":"Toronto","prov":"ON","st":"Delivered","od":"2026-01-15","pd":"2026-01-16","sd":"2026-01-17","dd":"2026-01-19","car":"Canpar","svc":"Ground","val":103.55,"otif":0,"items":[["Indoor Camera Kit",1,1]]},"SO-CA-00091":{"seg":"D2C","city":"Halifax","prov":"ON","st":"Shipped","od":"2025-11-17","pd":"2025-11-18","sd":"2025-11-19","dd":"2025-11-21","car":"Canada Post","svc":"Ground","val":93.1,"otif":0,"items":[["Door/Window Sensor 2-pack",1,1],["Door/Window Sensor 2-pack",1,1]]},"SO-CA-00092":{"seg":"Installer","city":"Windsor","prov":"NB","st":"Delivered","od":"2025-10-30","pd":"2025-11-06","sd":"2025-11-06","dd":"2025-11-10","car":"Purolator","svc":"Ground","val":750.66,"otif":0,"items":[["Motion Sensor",9,9],["Indoor Camera Kit",2,2],["Smart Siren",5,5]]},"SO-CA-00093":{"seg":"D2C","city":"Winnipeg","prov":"AB","st":"Delivered","od":"2026-02-03","pd":"2026-02-04","sd":"2026-02-07","dd":"2026-02-09","car":"Canpar","svc":"Ground","val":0.0,"otif":0,"items":[["Indoor Camera Kit",1,0]]},"SO-CA-00094":{"seg":"D2C","city":"Montreal","prov":"ON","st":"Delivered","od":"2025-10-21","pd":"2025-10-23","sd":"2025-10-24","dd":"2025-10-27","car":"Purolator","svc":"Standard","val":367.65,"otif":0,"items":[["Indoor Camera Kit",2,2],["Outdoor Camera Kit",1,1]]},"SO-CA-00095":{"seg":"Installer","city":"Windsor","prov":"NB","st":"Delivered","od":"2025-11-17","pd":"2025-11-24","sd":"2025-11-25","dd":"2025-11-28","car":"UPS","svc":"Ground","val":1316.39,"otif":0,"items":[["Door/Window Sensor 2-pack",7,7],["Sentinel Hub (CA Edition)",6,6]]},"SO-CA-00096":{"seg":"D2C","city":"Windsor","prov":"ON","st":"Shipped","od":"2025-10-05","pd":"2025-10-06","sd":"2025-10-06","dd":"2025-10-10","car":"Purolator","svc":"Ground","val":199.0,"otif":0,"items":[["Sentinel Hub (CA Edition)",1,1]]},"SO-CA-00097":{"seg":"Installer","city":"Halifax","prov":"ON","st":"Delivered","od":"2025-12-03","pd":"2025-12-08","sd":"2025-12-08","dd":"2025-12-11","car":"Purolator","svc":"Ground","val":1550.0,"otif":0,"items":[["Door/Window Sensor 2-pack",8,8],["Sentinel Hub (CA Edition)",7,7]]},"SO-CA-00098":{"seg":"Installer","city":"London","prov":"ON","st":"Delivered","od":"2025-12-13","pd":"2025-12-17","sd":"2025-12-18","dd":"2025-12-20","car":"UPS","svc":"Ground","val":1439.16,"otif":0,"items":[["Smart Siren",2,2],["Outdoor Camera Kit",9,9]]},"SO-CA-00099":{"seg":"D2C","city":"Hamilton","prov":"ON","st":"Delivered","od":"2025-12-02","pd":"2025-12-05","sd":"2025-12-06","dd":"2025-12-08","car":"FedEx","svc":"Ground","val":37.05,"otif":0,"items":[["Motion Sensor",1,1]]},"SO-CA-00100":{"seg":"D2C","city":"Ottawa","prov":"ON","st":"Delivered","od":"2025-12-30","pd":"2026-01-02","sd":"2026-01-03","dd":"2026-01-08","car":"UPS","svc":"Ground","val":189.75,"otif":0,"items":[["Smart Siren",1,1],["Smart Siren",2,2]]},"SO-CA-00101":{"seg":"Installer","city":"Hamilton","prov":"NB","st":"Delivered","od":"2026-02-23","pd":"2026-02-26","sd":"2026-02-26","dd":"2026-02-27","car":"Canada Post","svc":"Ground","val":1663.68,"otif":0,"items":[["Smart Siren",8,8],["Smart Siren",4,4],["Indoor Camera Kit",12,11]]},"SO-CA-00102":{"seg":"Installer","city":"Windsor","prov":"BC","st":"Shipped","od":"2025-12-31","pd":"2026-01-03","sd":"2026-01-06","dd":"2026-01-07","car":"UPS","svc":"Ground","val":709.04,"otif":0,"items":[["Indoor Camera Kit",9,8]]},"SO-CA-00103":{"seg":"Retail","city":"Vancouver","prov":"ON","st":"Delivered","od":"2025-10-14","pd":"2025-10-21","sd":"2025-10-22","dd":"2025-10-24","car":"UPS","svc":"Ground","val":929.64,"otif":0,"items":[["Sentinel Hub (CA Edition)",6,6]]},"SO-CA-00104":{"seg":"D2C","city":"Windsor","prov":"ON","st":"Delivered","od":"2026-02-14","pd":"2026-02-17","sd":"2026-02-17","dd":"2026-02-18","car":"Canpar","svc":"Ground","val":155.55,"otif":0,"items":[["Door/Window Sensor 2-pack",1,1],["Indoor Camera Kit",1,1]]},"SO-CA-00105":{"seg":"Retail","city":"Calgary","prov":"QC","st":"Delivered","od":"2025-11-14","pd":"2025-11-18","sd":"2025-11-18","dd":"2025-11-19","car":"Purolator","svc":"Express","val":597.8,"otif":0,"items":[["Motion Sensor",20,20]]},"SO-CA-00106":{"seg":"D2C","city":"Winnipeg","prov":"BC","st":"Delivered","od":"2025-12-21","pd":"2025-12-23","sd":"2025-12-23","dd":"2025-12-26","car":"Canpar","svc":"Standard","val":39.0,"otif":0,"items":[["Motion Sensor",1,1]]},"SO-CA-00107":{"seg":"D2C","city":"Vancouver","prov":"ON","st":"Delivered","od":"2026-02-05","pd":"2026-02-07","sd":"2026-02-07","dd":"2026-02-11","car":"Canada Post","svc":"Ground","val":103.55,"otif":0,"items":[["Indoor Camera Kit",1,1]]},"SO-CA-00108":{"seg":"Installer","city":"Winnipeg","prov":"ON","st":"Delivered","od":"2026-01-27","pd":"2026-01-30","sd":"2026-01-30","dd":"2026-02-02","car":"UPS","svc":"Ground","val":82.0,"otif":0,"items":[["Door/Window Sensor 2-pack",2,2]]},"SO-CA-00109":{"seg":"D2C","city":"Toronto","prov":"ON","st":"Delivered","od":"2026-01-29","pd":"2026-01-30","sd":"2026-02-03","dd":"2026-02-05","car":"Canada Post","svc":"Ground","val":102.6,"otif":0,"items":[["Motion Sensor",1,1],["Smart Siren",1,1]]},"SO-CA-00110":{"seg":"D2C","city":"Montreal","prov":"NS","st":"Delivered","od":"2026-01-31","pd":"2026-02-03","sd":"2026-02-05","dd":"2026-02-06","car":"UPS","svc":"Express","val":212.55,"otif":0,"items":[["Indoor Camera Kit",1,1],["Indoor Camera Kit",1,1]]},"SO-CA-00111":{"seg":"D2C","city":"Toronto","prov":"ON","st":"Delivered","od":"2025-11-11","pd":"2025-11-13","sd":"2025-11-13","dd":"2025-11-16","car":"Purolator","svc":"Ground","val":120.15,"otif":0,"items":[["Door/Window Sensor 2-pack",1,1],["Motion Sensor",1,1],["Motion Sensor",1,1]]},"SO-CA-00112":{"seg":"Installer","city":"Windsor","prov":"BC","st":"Delivered","od":"2025-12-04","pd":"2025-12-11","sd":"2025-12-15","dd":"2025-12-17","car":"Purolator","svc":"Ground","val":797.39,"otif":0,"items":[["Door/Window Sensor 2-pack",11,11],["Motion Sensor",11,11]]},"SO-CA-00113":{"seg":"Installer","city":"Halifax","prov":"NS","st":"Delivered","od":"2026-02-03","pd":"2026-02-07","sd":"2026-02-07","dd":"2026-02-10","car":"Canada Post","svc":"Ground","val":695.25,"otif":0,"items":[["Outdoor Camera Kit",5,5]]},"SO-CA-00114":{"seg":"D2C","city":"Halifax","prov":"ON","st":"Delivered","od":"2026-01-29","pd":"2026-01-31","sd":"2026-01-31","dd":"2026-02-01","car":"Purolator","svc":"Express","val":79.2,"otif":0,"items":[["Motion Sensor",1,1],["Door/Window Sensor 2-pack",1,1]]},"SO-CA-00115":{"seg":"D2C","city":"Winnipeg","prov":"AB","st":"Shipped","od":"2025-11-19","pd":"2025-11-20","sd":"2025-11-20","dd":"2025-11-22","car":"Canada Post","svc":"Ground","val":199.0,"otif":1,"items":[["Sentinel Hub (CA Edition)",1,1]]},"SO-CA-00116":{"seg":"D2C","city":"London","prov":"ON","st":"Shipped","od":"2025-11-25","pd":"2025-11-27","sd":"2025-11-27","dd":"2025-11-29","car":"Canada Post","svc":"Ground","val":215.55,"otif":0,"items":[["Outdoor Camera Kit",1,1],["Door/Window Sensor 2-pack",1,1]]},"SO-CA-00117":{"seg":"D2C","city":"Toronto","prov":"ON","st":"Delivered","od":"2026-01-08","pd":"2026-01-09","sd":"2026-01-10","dd":"2026-01-13","car":"FedEx","svc":"Express","val":131.1,"otif":0,"items":[["Smart Siren",1,1],["Smart Siren",1,1]]},"SO-CA-00118":{"seg":"Retail","city":"Toronto","prov":"MB","st":"Delivered","od":"2025-10-28","pd":"2025-11-04","sd":"2025-11-06","dd":"2025-11-10","car":"UPS","svc":"Ground","val":2263.25,"otif":0,"items":[["Door/Window Sensor 2-pack",10,10],["Sentinel Hub (CA Edition)",13,13]]},"SO-CA-00119":{"seg":"D2C","city":"Montreal","prov":"ON","st":"Delivered","od":"2026-01-25","pd":"2026-01-28","sd":"2026-01-28","dd":"2026-01-31","car":"UPS","svc":"Standard","val":384.75,"otif":0,"items":[["Indoor Camera Kit",3,3],["Motion Sensor",1,1],["Motion Sensor",1,1]]},"SO-CA-00120":{"seg":"D2C","city":"Montreal","prov":"QC","st":"Shipped","od":"2026-01-26","pd":"2026-01-28","sd":"2026-02-01","dd":"2026-02-03","car":"Canpar","svc":"Express","val":49.0,"otif":0,"items":[["Door/Window Sensor 2-pack",1,1]]},"SO-CA-00121":{"seg":"D2C","city":"Calgary","prov":"BC","st":"Delivered","od":"2025-10-21","pd":"2025-10-22","sd":"2025-10-24","dd":"2025-10-28","car":"UPS","svc":"Standard","val":134.55,"otif":0,"items":[["Smart Siren",1,1],["Smart Siren",1,1]]},"SO-CA-00122":{"seg":"Installer","city":"Hamilton","prov":"NB","st":"Delivered","od":"2026-01-13","pd":"2026-01-20","sd":"2026-01-23","dd":"2026-01-28","car":"UPS","svc":"Standard","val":369.6,"otif":0,"items":[["Indoor Camera Kit",4,4]]},"SO-CA-00123":{"seg":"D2C","city":"Windsor","prov":"ON","st":"Delivered","od":"2026-02-27","pd":"2026-02-28","sd":"2026-03-01","dd":"2026-03-03","car":"Canada Post","svc":"Ground","val":199.0,"otif":1,"items":[["Sentinel Hub (CA Edition)",1,1]]},"SO-CA-00124":{"seg":"D2C","city":"Toronto","prov":"ON","st":"Shipped","od":"2026-01-27","pd":"2026-01-29","sd":"2026-01-29","dd":"2026-02-01","car":"FedEx","svc":"Ground","val":199.0,"otif":0,"items":[["Sentinel Hub (CA Edition)",1,1]]},"SO-CA-00125":{"seg":"Installer","city":"Winnipeg","prov":"NB","st":"Delivered","od":"2025-10-09","pd":"2025-10-15","sd":"2025-10-15","dd":"2025-10-18","car":"FedEx","svc":"Ground","val":163.6,"otif":0,"items":[["Motion Sensor",5,5]]},"SO-CA-00126":{"seg":"Installer","city":"Windsor","prov":"BC","st":"Delivered","od":"2026-02-24","pd":"2026-03-03","sd":"2026-03-05","dd":"2026-03-08","car":"FedEx","svc":"Ground","val":1159.72,"otif":0,"items":[["Indoor Camera Kit",8,8],["Outdoor Camera Kit",3,3]]},"SO-CA-00127":{"seg":"Installer","city":"London","prov":"BC","st":"Shipped","od":"2025-11-16","pd":"2025-11-22","sd":"2025-11-22","dd":"2025-11-23","car":"Canpar","svc":"Express","val":192.3,"otif":1,"items":[["Motion Sensor",6,6]]},"SO-CA-00128":{"seg":"D2C","city":"Montreal","prov":"QC","st":"Delivered","od":"2026-02-21","pd":"2026-02-22","sd":"2026-02-23","dd":"2026-02-24","car":"Purolator","svc":"Express","val":218.0,"otif":1,"items":[["Indoor Camera Kit",2,2]]},"SO-CA-00129":{"seg":"D2C","city":"London","prov":"ON","st":"Delivered","od":"2025-12-04","pd":"2025-12-06","sd":"2025-12-06","dd":"2025-12-09","car":"Purolator","svc":"Ground","val":152.55,"otif":0,"items":[["Indoor Camera Kit",1,1],["Door/Window Sensor 2-pack",1,1]]},"SO-CA-00130":{"seg":"D2C","city":"Toronto","prov":"ON","st":"Delivered","od":"2025-10-03","pd":"2025-10-05","sd":"2025-10-05","dd":"2025-10-06","car":"Canada Post","svc":"Ground","val":103.55,"otif":0,"items":[["Indoor Camera Kit",1,1]]},"SO-CA-00131":{"seg":"D2C","city":"Ottawa","prov":"ON","st":"Shipped","od":"2025-12-20","pd":"2025-12-22","sd":"2025-12-22","dd":"2025-12-25","car":"Canada Post","svc":"Ground","val":636.0,"otif":0,"items":[["Motion Sensor",1,1],["Sentinel Hub (CA Edition)",3,3]]},"SO-CA-00132":{"seg":"Installer","city":"London","prov":"ON","st":"Delivered","od":"2025-11-06","pd":"2025-11-10","sd":"2025-11-13","dd":"2025-11-14","car":"Canada Post","svc":"Ground","val":1333.5,"otif":0,"items":[["Sentinel Hub (CA Edition)",6,6],["Smart Siren",6,6]]},"SO-CA-00133":{"seg":"D2C","city":"London","prov":"QC","st":"Delivered","od":"2025-12-14","pd":"2025-12-15","sd":"2025-12-15","dd":"2025-12-16","car":"Canada Post","svc":"Ground","val":244.15,"otif":1,"items":[["Indoor Camera Kit",1,1],["Motion Sensor",1,1],["Indoor Camera Kit",1,1]]},"SO-CA-00134":{"seg":"D2C","city":"Toronto","prov":"ON","st":"Delivered","od":"2026-01-10","pd":"2026-01-13","sd":"2026-01-13","dd":"2026-01-14","car":"FedEx","svc":"Express","val":398.0,"otif":0,"items":[["Sentinel Hub (CA Edition)",2,2]]},"SO-CA-00135":{"seg":"D2C","city":"Toronto","prov":"ON","st":"Shipped","od":"2025-10-22","pd":"2025-10-24","sd":"2025-10-27","dd":"2025-10-30","car":"FedEx","svc":"Ground","val":597.0,"otif":0,"items":[["Sentinel Hub (CA Edition)",1,1],["Sentinel Hub (CA Edition)",2,2]]},"SO-CA-00136":{"seg":"D2C","city":"Ottawa","prov":"NB","st":"Delivered","od":"2025-10-31","pd":"2025-11-01","sd":"2025-11-01","dd":"2025-11-04","car":"Canada Post","svc":"Ground","val":587.05,"otif":1,"items":[["Sentinel Hub (CA Edition)",1,1],["Sentinel Hub (CA Edition)",2,2]]},"SO-CA-00137":{"seg":"D2C","city":"Vancouver","prov":"ON","st":"Shipped","od":"2025-10-05","pd":"2025-10-06","sd":"2025-10-07","dd":"2025-10-09","car":"FedEx","svc":"Express","val":189.05,"otif":1,"items":[["Sentinel Hub (CA Edition)",1,1]]},"SO-CA-00138":{"seg":"D2C","city":"Toronto","prov":"AB","st":"Delivered","od":"2025-12-17","pd":"2025-12-20","sd":"2025-12-21","dd":"2025-12-23","car":"Canada Post","svc":"Standard","val":103.55,"otif":0,"items":[["Indoor Camera Kit",1,1]]},"SO-CA-00139":{"seg":"Retail","city":"London","prov":"ON","st":"Delivered","od":"2025-10-03","pd":"2025-10-07","sd":"2025-10-09","dd":"2025-10-12","car":"Canpar","svc":"Ground","val":2234.81,"otif":0,"items":[["Motion Sensor",19,19],["Outdoor Camera Kit",13,13]]},"SO-CA-00140":{"seg":"Installer","city":"London","prov":"ON","st":"Delivered","od":"2025-10-26","pd":"2025-11-01","sd":"2025-11-03","dd":"2025-11-05","car":"UPS","svc":"Ground","val":1776.68,"otif":0,"items":[["Indoor Camera Kit",12,12],["Sentinel Hub (CA Edition)",4,4]]},"SO-CA-00141":{"seg":"D2C","city":"Calgary","prov":"BC","st":"Shipped","od":"2025-11-28","pd":"2025-11-30","sd":"2025-12-01","dd":"2025-12-04","car":"Canada Post","svc":"Ground","val":189.05,"otif":0,"items":[["Sentinel Hub (CA Edition)",1,1]]},"SO-CA-00142":{"seg":"Installer","city":"Calgary","prov":"MB","st":"Delivered","od":"2025-11-12","pd":"2025-11-19","sd":"2025-11-20","dd":"2025-11-22","car":"Canada Post","svc":"Express","val":965.04,"otif":0,"items":[["Sentinel Hub (CA Edition)",6,6]]},"SO-CA-00143":{"seg":"D2C","city":"London","prov":"ON","st":"Delivered","od":"2026-01-02","pd":"2026-01-04","sd":"2026-01-04","dd":"2026-01-05","car":"FedEx","svc":"Ground","val":158.0,"otif":0,"items":[["Indoor Camera Kit",1,1],["Door/Window Sensor 2-pack",1,1]]},"SO-CA-00144":{"seg":"Installer","city":"Windsor","prov":"BC","st":"Delivered","od":"2025-12-31","pd":"2026-01-03","sd":"2026-01-06","dd":"2026-01-09","car":"Canada Post","svc":"Ground","val":876.49,"otif":0,"items":[["Door/Window Sensor 2-pack",6,6],["Door/Window Sensor 2-pack",9,9],["Door/Window Sensor 2-pack",7,7]]},"SO-CA-00145":{"seg":"D2C","city":"Ottawa","prov":"NB","st":"Shipped","od":"2026-02-15","pd":"2026-02-16","sd":"2026-02-19","dd":"2026-02-20","car":"Canpar","svc":"Ground","val":199.0,"otif":0,"items":[["Sentinel Hub (CA Edition)",1,1]]},"SO-CA-00146":{"seg":"D2C","city":"Calgary","prov":"BC","st":"Delivered","od":"2025-11-13","pd":"2025-11-16","sd":"2025-11-17","dd":"2025-11-21","car":"Canada Post","svc":"Ground","val":372.55,"otif":0,"items":[["Smart Siren",1,1],["Outdoor Camera Kit",1,1],["Smart Siren",2,2]]},"SO-CA-00147":{"seg":"D2C","city":"London","prov":"ON","st":"Shipped","od":"2025-11-12","pd":"2025-11-14","sd":"2025-11-16","dd":"2025-11-19","car":"UPS","svc":"Ground","val":411.55,"otif":0,"items":[["Indoor Camera Kit",1,1],["Indoor Camera Kit",1,1],["Sentinel Hub (CA Edition)",1,1]]},"SO-CA-00148":{"seg":"Installer","city":"London","prov":"ON","st":"Shipped","od":"2025-10-04","pd":"2025-10-09","sd":"2025-10-09","dd":"2025-10-13","car":"Purolator","svc":"Express","val":637.63,"otif":0,"items":[["Indoor Camera Kit",7,7]]},"SO-CA-00149":{"seg":"Retail","city":"London","prov":"ON","st":"Delivered","od":"2025-10-30","pd":"2025-11-05","sd":"2025-11-07","dd":"2025-11-08","car":"Purolator","svc":"Ground","val":2870.58,"otif":0,"items":[["Motion Sensor",15,15],["Indoor Camera Kit",15,15],["Smart Siren",23,23]]},"SO-CA-00150":{"seg":"Retail","city":"London","prov":"ON","st":"Delivered","od":"2025-10-14","pd":"2025-10-19","sd":"2025-10-22","dd":"2025-10-23","car":"Purolator","svc":"Ground","val":1671.7,"otif":0,"items":[["Outdoor Camera Kit",12,12],["Door/Window Sensor 2-pack",5,5]]},"SO-CA-00151":{"seg":"D2C","city":"Winnipeg","prov":"BC","st":"Shipped","od":"2025-12-28","pd":"2025-12-31","sd":"2025-12-31","dd":"2026-01-05","car":"Canada Post","svc":"Ground","val":49.0,"otif":0,"items":[["Door/Window Sensor 2-pack",1,1]]},"SO-CA-00152":{"seg":"D2C","city":"London","prov":"ON","st":"Delivered","od":"2025-10-15","pd":"2025-10-17","sd":"2025-10-17","dd":"2025-10-20","car":"Purolator","svc":"Standard","val":183.1,"otif":0,"items":[["Indoor Camera Kit",1,1],["Motion Sensor",2,2]]},"SO-CA-00153":{"seg":"Installer","city":"Halifax","prov":"ON","st":"Delivered","od":"2025-11-03","pd":"2025-11-10","sd":"2025-11-10","dd":"2025-11-12","car":"Purolator","svc":"Ground","val":534.54,"otif":0,"items":[["Door/Window Sensor 2-pack",6,6],["Motion Sensor",9,9]]},"SO-CA-00154":{"seg":"Installer","city":"Halifax","prov":"AB","st":"Delivered","od":"2025-11-28","pd":"2025-12-04","sd":"2025-12-04","dd":"2025-12-05","car":"FedEx","svc":"Ground","val":267.18,"otif":0,"items":[["Outdoor Camera Kit",2,2]]},"SO-CA-00155":{"seg":"D2C","city":"Halifax","prov":"ON","st":"Delivered","od":"2026-01-06","pd":"2026-01-07","sd":"2026-01-07","dd":"2026-01-10","car":"Canpar","svc":"Ground","val":69.0,"otif":0,"items":[["Smart Siren",1,1],["Motion Sensor",1,0]]},"SO-CA-00156":{"seg":"Installer","city":"Vancouver","prov":"ON","st":"Delivered","od":"2026-01-06","pd":"2026-01-09","sd":"2026-01-09","dd":"2026-01-11","car":"Purolator","svc":"Ground","val":284.34,"otif":1,"items":[["Door/Window Sensor 2-pack",7,7]]},"SO-CA-00157":{"seg":"Installer","city":"Halifax","prov":"ON","st":"Delivered","od":"2026-01-14","pd":"2026-01-19","sd":"2026-01-20","dd":"2026-01-21","car":"Canada Post","svc":"Ground","val":217.16,"otif":0,"items":[["Smart Siren",4,4]]},"SO-CA-00158":{"seg":"Installer","city":"Halifax","prov":"ON","st":"Delivered","od":"2025-12-21","pd":"2025-12-25","sd":"2025-12-25","dd":"2025-12-28","car":"Canada Post","svc":"Ground","val":408.96,"otif":0,"items":[["Outdoor Camera Kit",3,3]]},"SO-CA-00159":{"seg":"Installer","city":"Toronto","prov":"QC","st":"Delivered","od":"2026-01-03","pd":"2026-01-08","sd":"2026-01-08","dd":"2026-01-10","car":"Canada Post","svc":"Ground","val":290.15,"otif":0,"items":[["Door/Window Sensor 2-pack",7,7]]},"SO-CA-00160":{"seg":"D2C","city":"Halifax","prov":"ON","st":"Shipped","od":"2026-01-18","pd":"2026-01-19","sd":"2026-01-21","dd":"2026-01-26","car":"FedEx","svc":"Standard","val":186.1,"otif":0,"items":[["Indoor Camera Kit",1,1],["Door/Window Sensor 2-pack",1,1],["Motion Sensor",1,1]]},"SO-CA-00161":{"seg":"D2C","city":"Montreal","prov":"ON","st":"Delivered","od":"2026-02-09","pd":"2026-02-11","sd":"2026-02-11","dd":"2026-02-13","car":"Purolator","svc":"Ground","val":243.1,"otif":1,"items":[["Sentinel Hub (CA Edition)",1,1],["Door/Window Sensor 2-pack",1,1]]},"SO-CA-00162":{"seg":"Installer","city":"Hamilton","prov":"NB","st":"Delivered","od":"2025-11-20","pd":"2025-11-25","sd":"2025-11-26","dd":"2025-11-28","car":"Purolator","svc":"Express","val":158.41,"otif":0,"items":[["Sentinel Hub (CA Edition)",2,1]]},"SO-CA-00163":{"seg":"Installer","city":"Halifax","prov":"AB","st":"Delivered","od":"2025-12-31","pd":"2026-01-07","sd":"2026-01-09","dd":"2026-01-11","car":"Canpar","svc":"Ground","val":1901.93,"otif":0,"items":[["Smart Siren",7,7],["Outdoor Camera Kit",8,8],["Door/Window Sensor 2-pack",8,8]]},"SO-CA-00164":{"seg":"D2C","city":"London","prov":"ON","st":"Delivered","od":"2026-02-08","pd":"2026-02-09","sd":"2026-02-11","dd":"2026-02-14","car":"Purolator","svc":"Ground","val":152.1,"otif":0,"items":[["Outdoor Camera Kit",1,1]]},"SO-CA-00165":{"seg":"D2C","city":"Montreal","prov":"ON","st":"Delivered","od":"2026-01-18","pd":"2026-01-21","sd":"2026-01-21","dd":"2026-01-23","car":"Purolator","svc":"Ground","val":46.55,"otif":0,"items":[["Door/Window Sensor 2-pack",1,1]]},"SO-CA-00166":{"seg":"Installer","city":"Windsor","prov":"NB","st":"Delivered","od":"2026-01-11","pd":"2026-01-17","sd":"2026-01-17","dd":"2026-01-18","car":"Canada Post","svc":"Ground","val":501.94,"otif":0,"items":[["Smart Siren",6,6],["Door/Window Sensor 2-pack",4,4]]},"SO-CA-00167":{"seg":"Installer","city":"Hamilton","prov":"NB","st":"Shipped","od":"2025-12-19","pd":"2025-12-24","sd":"2025-12-26","dd":"2025-12-29","car":"Canada Post","svc":"Ground","val":166.75,"otif":0,"items":[["Motion Sensor",6,5]]},"SO-CA-00168":{"seg":"Installer","city":"Hamilton","prov":"NB","st":"Shipped","od":"2025-12-18","pd":"2025-12-22","sd":"2025-12-24","dd":"2025-12-28","car":"Purolator","svc":"Ground","val":1705.71,"otif":0,"items":[["Sentinel Hub (CA Edition)",5,5],["Indoor Camera Kit",7,7],["Motion Sensor",6,6]]},"SO-CA-00169":{"seg":"Installer","city":"Hamilton","prov":"ON","st":"Delivered","od":"2026-01-29","pd":"2026-02-04","sd":"2026-02-05","dd":"2026-02-08","car":"FedEx","svc":"Ground","val":2677.68,"otif":0,"items":[["Sentinel Hub (CA Edition)",8,8],["Indoor Camera Kit",8,8],["Sentinel Hub (CA Edition)",4,4]]},"SO-CA-00170":{"seg":"D2C","city":"Montreal","prov":"ON","st":"Shipped","od":"2025-12-06","pd":"2025-12-09","sd":"2025-12-11","dd":"2025-12-13","car":"Canada Post","svc":"Ground","val":100.65,"otif":0,"items":[["Motion Sensor",1,1],["Smart Siren",1,1]]},"SO-CA-00171":{"seg":"D2C","city":"Halifax","prov":"ON","st":"Delivered","od":"2025-10-09","pd":"2025-10-12","sd":"2025-10-13","dd":"2025-10-18","car":"Canada Post","svc":"Ground","val":62.1,"otif":0,"items":[["Smart Siren",1,1]]},"SO-CA-00172":{"seg":"Installer","city":"London","prov":"ON","st":"Delivered","od":"2025-11-18","pd":"2025-11-24","sd":"2025-11-24","dd":"2025-11-26","car":"Canada Post","svc":"Ground","val":1200.54,"otif":1,"items":[["Indoor Camera Kit",7,7],["Outdoor Camera Kit",4,4]]},"SO-CA-00173":{"seg":"D2C","city":"Halifax","prov":"ON","st":"Shipped","od":"2026-01-04","pd":"2026-01-05","sd":"2026-01-05","dd":"2026-01-06","car":"Purolator","svc":"Express","val":69.0,"otif":1,"items":[["Smart Siren",1,1]]},"SO-CA-00174":{"seg":"D2C","city":"London","prov":"ON","st":"Delivered","od":"2025-10-18","pd":"2025-10-21","sd":"2025-10-21","dd":"2025-10-25","car":"Canada Post","svc":"Ground","val":134.55,"otif":0,"items":[["Smart Siren",1,1],["Smart Siren",1,1]]},"SO-CA-00175":{"seg":"D2C","city":"London","prov":"ON","st":"Delivered","od":"2025-11-29","pd":"2025-12-02","sd":"2025-12-02","dd":"2025-12-04","car":"Canada Post","svc":"Ground","val":191.1,"otif":0,"items":[["Motion Sensor",1,1],["Outdoor Camera Kit",1,1]]},"SO-CA-00176":{"seg":"Installer","city":"Hamilton","prov":"ON","st":"Delivered","od":"2026-02-13","pd":"2026-02-16","sd":"2026-02-17","dd":"2026-02-19","car":"Purolator","svc":"Ground","val":361.72,"otif":0,"items":[["Indoor Camera Kit",4,4]]},"SO-CA-00177":{"seg":"Installer","city":"Hamilton","prov":"ON","st":"Delivered","od":"2025-12-08","pd":"2025-12-13","sd":"2025-12-14","dd":"2025-12-16","car":"Purolator","svc":"Ground","val":116.43,"otif":0,"items":[["Door/Window Sensor 2-pack",3,3]]},"SO-CA-00178":{"seg":"Retail","city":"Hamilton","prov":"ON","st":"Delivered","od":"2025-10-09","pd":"2025-10-13","sd":"2025-10-15","dd":"2025-10-17","car":"FedEx","svc":"Ground","val":1958.54,"otif":0,"items":[["Indoor Camera Kit",9,9],["Door/Window Sensor 2-pack",16,16],["Motion Sensor",20,20]]},"SO-CA-00179":{"seg":"Retail","city":"London","prov":"ON","st":"Delivered","od":"2026-02-25","pd":"2026-03-03","sd":"2026-03-06","dd":"2026-03-09","car":"UPS","svc":"Ground","val":2526.9,"otif":0,"items":[["Indoor Camera Kit",15,15],["Indoor Camera Kit",15,15]]},"SO-CA-00180":{"seg":"Installer","city":"Halifax","prov":"AB","st":"Delivered","od":"2026-01-29","pd":"2026-02-04","sd":"2026-02-06","dd":"2026-02-11","car":"Canada Post","svc":"Standard","val":2001.15,"otif":0,"items":[["Outdoor Camera Kit",13,13],["Indoor Camera Kit",2,2]]},"SO-CA-00181":{"seg":"D2C","city":"Toronto","prov":"ON","st":"Delivered","od":"2025-12-22","pd":"2025-12-23","sd":"2025-12-23","dd":"2025-12-24","car":"Canada Post","svc":"Ground","val":349.65,"otif":1,"items":[["Indoor Camera Kit",2,2],["Motion Sensor",1,1],["Indoor Camera Kit",1,1]]},"SO-CA-00182":{"seg":"Installer","city":"Hamilton","prov":"NB","st":"Delivered","od":"2026-02-15","pd":"2026-02-22","sd":"2026-02-22","dd":"2026-02-24","car":"Canpar","svc":"Ground","val":1074.13,"otif":0,"items":[["Sentinel Hub (CA Edition)",4,4],["Smart Siren",7,7]]},"SO-CA-00183":{"seg":"Installer","city":"Vancouver","prov":"ON","st":"Delivered","od":"2025-11-08","pd":"2025-11-13","sd":"2025-11-16","dd":"2025-11-18","car":"UPS","svc":"Ground","val":1040.16,"otif":0,"items":[["Indoor Camera Kit",12,12]]},"SO-CA-00184":{"seg":"D2C","city":"Montreal","prov":"ON","st":"Delivered","od":"2025-11-17","pd":"2025-11-20","sd":"2025-11-22","dd":"2025-11-26","car":"Purolator","svc":"Standard","val":268.0,"otif":0,"items":[["Sentinel Hub (CA Edition)",1,1],["Smart Siren",1,1]]},"SO-CA-00185":{"seg":"D2C","city":"Montreal","prov":"QC","st":"Delivered","od":"2025-12-11","pd":"2025-12-13","sd":"2025-12-13","dd":"2025-12-17","car":"Purolator","svc":"Ground","val":257.2,"otif":0,"items":[["Outdoor Camera Kit",1,0],["Outdoor Camera Kit",1,1],["Door/Window Sensor 2-pack",2,2]]},"SO-CA-00186":{"seg":"Installer","city":"Hamilton","prov":"ON","st":"Delivered","od":"2025-12-29","pd":"2026-01-03","sd":"2026-01-06","dd":"2026-01-09","car":"UPS","svc":"Ground","val":1276.84,"otif":0,"items":[["Door/Window Sensor 2-pack",4,4],["Indoor Camera Kit",12,12]]},"SO-CA-00187":{"seg":"D2C","city":"Halifax","prov":"ON","st":"Delivered","od":"2025-10-28","pd":"2025-10-31","sd":"2025-11-03","dd":"2025-11-08","car":"Canada Post","svc":"Standard","val":356.0,"otif":0,"items":[["Indoor Camera Kit",2,2],["Smart Siren",2,2]]},"SO-CA-00188":{"seg":"Installer","city":"Halifax","prov":"AB","st":"Delivered","od":"2025-10-14","pd":"2025-10-21","sd":"2025-10-22","dd":"2025-10-23","car":"Canada Post","svc":"Ground","val":1796.72,"otif":0,"items":[["Outdoor Camera Kit",2,2],["Outdoor Camera Kit",4,4],["Outdoor Camera Kit",7,7]]},"SO-CA-00189":{"seg":"D2C","city":"Windsor","prov":"ON","st":"Delivered","od":"2026-02-27","pd":"2026-02-28","sd":"2026-03-01","dd":"2026-03-02","car":"Purolator","svc":"Ground","val":254.55,"otif":1,"items":[["Door/Window Sensor 2-pack",1,1],["Motion Sensor",1,1],["Outdoor Camera Kit",1,1]]},"SO-CA-00190":{"seg":"D2C","city":"Toronto","prov":"ON","st":"Delivered","od":"2025-12-30","pd":"2025-12-31","sd":"2026-01-01","dd":"2026-01-04","car":"Purolator","svc":"Ground","val":44.1,"otif":0,"items":[["Door/Window Sensor 2-pack",1,1]]},"SO-CA-00191":{"seg":"D2C","city":"Toronto","prov":"ON","st":"Delivered","od":"2025-10-25","pd":"2025-10-27","sd":"2025-10-27","dd":"2025-11-01","car":"FedEx","svc":"Ground","val":229.55,"otif":0,"items":[["Smart Siren",1,1],["Outdoor Camera Kit",1,1]]},"SO-CA-00192":{"seg":"D2C","city":"Toronto","prov":"ON","st":"Delivered","od":"2025-12-01","pd":"2025-12-02","sd":"2025-12-02","dd":"2025-12-05","car":"UPS","svc":"Ground","val":197.85,"otif":0,"items":[["Smart Siren",1,1],["Door/Window Sensor 2-pack",3,3]]},"SO-CA-00193":{"seg":"D2C","city":"Montreal","prov":"QC","st":"Delivered","od":"2025-11-07","pd":"2025-11-10","sd":"2025-11-11","dd":"2025-11-14","car":"UPS","svc":"Ground","val":197.6,"otif":0,"items":[["Outdoor Camera Kit",1,1],["Motion Sensor",1,1]]},"SO-CA-00194":{"seg":"D2C","city":"Toronto","prov":"ON","st":"Delivered","od":"2026-02-08","pd":"2026-02-10","sd":"2026-02-12","dd":"2026-02-14","car":"UPS","svc":"Ground","val":273.15,"otif":0,"items":[["Door/Window Sensor 2-pack",1,1],["Motion Sensor",1,1],["Sentinel Hub (CA Edition)",1,1]]},"SO-CA-00195":{"seg":"D2C","city":"Winnipeg","prov":"AB","st":"Delivered","od":"2026-02-09","pd":"2026-02-10","sd":"2026-02-10","dd":"2026-02-14","car":"UPS","svc":"Standard","val":49.0,"otif":0,"items":[["Smart Siren",1,0],["Door/Window Sensor 2-pack",1,1]]},"SO-CA-00196":{"seg":"Installer","city":"Toronto","prov":"QC","st":"Delivered","od":"2026-01-21","pd":"2026-01-24","sd":"2026-01-26","dd":"2026-01-27","car":"Canada Post","svc":"Ground","val":703.55,"otif":1,"items":[["Outdoor Camera Kit",5,5]]},"SO-CA-00197":{"seg":"Installer","city":"London","prov":"BC","st":"Delivered","od":"2025-11-21","pd":"2025-11-26","sd":"2025-11-28","dd":"2025-11-30","car":"UPS","svc":"Express","val":1706.92,"otif":0,"items":[["Sentinel Hub (CA Edition)",10,10],["Motion Sensor",4,4]]},"SO-CA-00198":{"seg":"Retail","city":"Vancouver","prov":"ON","st":"Delivered","od":"2025-11-25","pd":"2025-11-29","sd":"2025-12-01","dd":"2025-12-04","car":"Canpar","svc":"Ground","val":3652.54,"otif":0,"items":[["Motion Sensor",21,21],["Outdoor Camera Kit",19,19],["Door/Window Sensor 2-pack",15,15]]},"SO-CA-00199":{"seg":"D2C","city":"Toronto","prov":"ON","st":"Delivered","od":"2026-01-07","pd":"2026-01-08","sd":"2026-01-11","dd":"2026-01-14","car":"Purolator","svc":"Express","val":144.1,"otif":0,"items":[["Motion Sensor",1,1],["Indoor Camera Kit",1,1]]},"SO-CA-00200":{"seg":"Retail","city":"Toronto","prov":"ON","st":"Delivered","od":"2025-12-10","pd":"2025-12-16","sd":"2025-12-18","dd":"2025-12-22","car":"UPS","svc":"Express","val":1593.8,"otif":0,"items":[["Sentinel Hub (CA Edition)",10,10]]},"SO-CA-00201":{"seg":"D2C","city":"Toronto","prov":"ON","st":"Delivered","od":"2025-10-23","pd":"2025-10-24","sd":"2025-10-29","dd":"2025-11-01","car":"FedEx","svc":"Express","val":109.0,"otif":0,"items":[["Indoor Camera Kit",1,1]]},"SO-CA-00202":{"seg":"D2C","city":"Ottawa","prov":"ON","st":"Delivered","od":"2026-01-08","pd":"2026-01-10","sd":"2026-01-13","dd":"2026-01-14","car":"UPS","svc":"Express","val":35.1,"otif":0,"items":[["Motion Sensor",1,0],["Motion Sensor",1,1]]},"SO-CA-00203":{"seg":"Installer","city":"London","prov":"ON","st":"Delivered","od":"2026-01-23","pd":"2026-01-29","sd":"2026-01-29","dd":"2026-02-02","car":"Canada Post","svc":"Standard","val":1593.33,"otif":0,"items":[["Sentinel Hub (CA Edition)",9,9],["Indoor Camera Kit",2,1],["Motion Sensor",2,2]]},"SO-CA-00204":{"seg":"D2C","city":"London","prov":"ON","st":"Delivered","od":"2025-12-04","pd":"2025-12-07","sd":"2025-12-09","dd":"2025-12-11","car":"UPS","svc":"Ground","val":206.05,"otif":0,"items":[["Motion Sensor",1,1],["Outdoor Camera Kit",1,1]]},"SO-CA-00205":{"seg":"Installer","city":"Hamilton","prov":"ON","st":"Delivered","od":"2025-11-04","pd":"2025-11-07","sd":"2025-11-10","dd":"2025-11-14","car":"Canada Post","svc":"Ground","val":604.38,"otif":0,"items":[["Indoor Camera Kit",7,7]]},"SO-CA-00206":{"seg":"Retail","city":"Hamilton","prov":"ON","st":"Delivered","od":"2025-10-26","pd":"2025-10-31","sd":"2025-11-02","dd":"2025-11-05","car":"Purolator","svc":"Ground","val":3428.38,"otif":0,"items":[["Sentinel Hub (CA Edition)",23,23]]},"SO-CA-00207":{"seg":"Installer","city":"Hamilton","prov":"ON","st":"Delivered","od":"2026-01-13","pd":"2026-01-16","sd":"2026-01-16","dd":"2026-01-17","car":"FedEx","svc":"Ground","val":65.1,"otif":1,"items":[["Motion Sensor",2,2]]},"SO-CA-00208":{"seg":"D2C","city":"Windsor","prov":"ON","st":"Delivered","od":"2026-02-13","pd":"2026-02-14","sd":"2026-02-14","dd":"2026-02-16","car":"UPS","svc":"Ground","val":272.55,"otif":1,"items":[["Indoor Camera Kit",1,1],["Outdoor Camera Kit",1,1]]},"SO-CA-00209":{"seg":"Installer","city":"Montreal","prov":"ON","st":"Delivered","od":"2025-10-01","pd":"2025-10-08","sd":"2025-10-11","dd":"2025-10-13","car":"Canpar","svc":"Ground","val":1483.83,"otif":0,"items":[["Sentinel Hub (CA Edition)",9,9]]},"SO-CA-00210":{"seg":"Retail","city":"Calgary","prov":"QC","st":"Delivered","od":"2026-01-13","pd":"2026-01-18","sd":"2026-01-18","dd":"2026-01-20","car":"Purolator","svc":"Ground","val":3745.96,"otif":0,"items":[["Outdoor Camera Kit",23,23],["Indoor Camera Kit",11,11]]},"SO-CA-00211":{"seg":"Installer","city":"Vancouver","prov":"ON","st":"Shipped","od":"2026-02-05","pd":"2026-02-12","sd":"2026-02-12","dd":"2026-02-15","car":"Purolator","svc":"Express","val":170.67,"otif":0,"items":[["Smart Siren",3,3]]},"SO-CA-00212":{"seg":"D2C","city":"Montreal","prov":"NS","st":"Delivered","od":"2026-02-17","pd":"2026-02-20","sd":"2026-02-20","dd":"2026-02-21","car":"UPS","svc":"Standard","val":276.1,"otif":1,"items":[["Smart Siren",1,1],["Indoor Camera Kit",1,1],["Indoor Camera Kit",1,1]]},"SO-CA-00213":{"seg":"Installer","city":"Halifax","prov":"AB","st":"Delivered","od":"2026-01-06","pd":"2026-01-11","sd":"2026-01-13","dd":"2026-01-14","car":"Canada Post","svc":"Ground","val":887.14,"otif":0,"items":[["Door/Window Sensor 2-pack",11,11],["Sentinel Hub (CA Edition)",3,3]]},"SO-CA-00214":{"seg":"D2C","city":"London","prov":"ON","st":"Shipped","od":"2025-10-17","pd":"2025-10-20","sd":"2025-10-23","dd":"2025-10-25","car":"Purolator","svc":"Standard","val":378.55,"otif":0,"items":[["Outdoor Camera Kit",1,1],["Indoor Camera Kit",2,2]]},"SO-CA-00215":{"seg":"Installer","city":"Winnipeg","prov":"NB","st":"Delivered","od":"2025-11-23","pd":"2025-11-27","sd":"2025-11-27","dd":"2025-11-28","car":"Canada Post","svc":"Standard","val":268.11,"otif":0,"items":[["Indoor Camera Kit",3,3]]},"SO-CA-00216":{"seg":"Installer","city":"Calgary","prov":"MB","st":"Delivered","od":"2025-11-18","pd":"2025-11-23","sd":"2025-11-24","dd":"2025-11-26","car":"Purolator","svc":"Standard","val":1107.6,"otif":0,"items":[["Sentinel Hub (CA Edition)",4,4],["Door/Window Sensor 2-pack",12,12]]},"SO-CA-00217":{"seg":"Installer","city":"London","prov":"ON","st":"Delivered","od":"2025-12-15","pd":"2025-12-19","sd":"2025-12-23","dd":"2025-12-25","car":"UPS","svc":"Ground","val":341.22,"otif":0,"items":[["Smart Siren",6,6]]},"SO-CA-00218":{"seg":"Installer","city":"Montreal","prov":"ON","st":"Delivered","od":"2026-01-21","pd":"2026-01-28","sd":"2026-01-29","dd":"2026-02-01","car":"Canada Post","svc":"Standard","val":676.12,"otif":0,"items":[["Smart Siren",8,8],["Door/Window Sensor 2-pack",5,5]]},"SO-CA-00219":{"seg":"D2C","city":"Halifax","prov":"ON","st":"Delivered","od":"2026-02-13","pd":"2026-02-15","sd":"2026-02-17","dd":"2026-02-20","car":"Canpar","svc":"Ground","val":186.3,"otif":0,"items":[["Indoor Camera Kit",1,1],["Door/Window Sensor 2-pack",2,2]]},"SO-CA-00220":{"seg":"D2C","city":"Montreal","prov":"NS","st":"Delivered","od":"2025-12-24","pd":"2025-12-26","sd":"2025-12-27","dd":"2025-12-31","car":"Canada Post","svc":"Ground","val":39.0,"otif":0,"items":[["Motion Sensor",1,1]]},"SO-CA-00221":{"seg":"D2C","city":"Hamilton","prov":"ON","st":"Delivered","od":"2026-01-14","pd":"2026-01-17","sd":"2026-01-18","dd":"2026-01-19","car":"Canada Post","svc":"Ground","val":229.55,"otif":0,"items":[["Outdoor Camera Kit",1,1],["Smart Siren",1,1]]},"SO-CA-00222":{"seg":"D2C","city":"Toronto","prov":"AB","st":"Delivered","od":"2025-12-20","pd":"2025-12-23","sd":"2025-12-26","dd":"2025-12-28","car":"FedEx","svc":"Express","val":65.55,"otif":0,"items":[["Smart Siren",1,1]]},"SO-CA-00223":{"seg":"D2C","city":"Halifax","prov":"ON","st":"Delivered","od":"2025-10-16","pd":"2025-10-18","sd":"2025-10-18","dd":"2025-10-20","car":"Canada Post","svc":"Standard","val":207.1,"otif":0,"items":[["Indoor Camera Kit",1,1],["Indoor Camera Kit",1,1]]},"SO-CA-00224":{"seg":"D2C","city":"Hamilton","prov":"ON","st":"Delivered","od":"2026-01-17","pd":"2026-01-18","sd":"2026-01-18","dd":"2026-01-22","car":"UPS","svc":"Ground","val":160.55,"otif":0,"items":[["Outdoor Camera Kit",1,1]]},"SO-CA-00225":{"seg":"Installer","city":"London","prov":"BC","st":"Delivered","od":"2025-11-08","pd":"2025-11-13","sd":"2025-11-14","dd":"2025-11-17","car":"Purolator","svc":"Ground","val":1378.72,"otif":0,"items":[["Outdoor Camera Kit",6,6],["Outdoor Camera Kit",2,2],["Outdoor Camera Kit",3,2]]},"SO-CA-00226":{"seg":"D2C","city":"Toronto","prov":"AB","st":"Delivered","od":"2025-12-11","pd":"2025-12-14","sd":"2025-12-14","dd":"2025-12-17","car":"Canada Post","svc":"Ground","val":39.0,"otif":0,"items":[["Motion Sensor",1,1]]},"SO-CA-00227":{"seg":"Installer","city":"Vancouver","prov":"ON","st":"Delivered","od":"2026-02-24","pd":"2026-03-03","sd":"2026-03-03","dd":"2026-03-08","car":"Canpar","svc":"Ground","val":1070.0,"otif":0,"items":[["Indoor Camera Kit",11,11],["Motion Sensor",3,3]]},"SO-CA-00228":{"seg":"Installer","city":"Windsor","prov":"NB","st":"Delivered","od":"2026-02-22","pd":"2026-02-26","sd":"2026-02-26","dd":"2026-02-28","car":"UPS","svc":"Ground","val":227.62,"otif":0,"items":[["Motion Sensor",2,2],["Motion Sensor",5,5]]},"SO-CA-00229":{"seg":"Installer","city":"London","prov":"ON","st":"Shipped","od":"2025-12-01","pd":"2025-12-08","sd":"2025-12-09","dd":"2025-12-13","car":"Canpar","svc":"Ground","val":302.88,"otif":0,"items":[["Motion Sensor",2,2],["Smart Siren",4,4]]},"SO-CA-00230":{"seg":"D2C","city":"Toronto","prov":"AB","st":"Delivered","od":"2026-02-17","pd":"2026-02-18","sd":"2026-02-18","dd":"2026-02-22","car":"Canada Post","svc":"Ground","val":305.1,"otif":0,"items":[["Smart Siren",3,3],["Indoor Camera Kit",1,1]]},"SO-CA-00231":{"seg":"Installer","city":"Montreal","prov":"ON","st":"Delivered","od":"2025-11-22","pd":"2025-11-29","sd":"2025-11-29","dd":"2025-12-02","car":"Canpar","svc":"Ground","val":480.12,"otif":0,"items":[["Sentinel Hub (CA Edition)",2,2],["Motion Sensor",5,5]]},"SO-CA-00232":{"seg":"D2C","city":"Montreal","prov":"ON","st":"Delivered","od":"2026-01-06","pd":"2026-01-07","sd":"2026-01-08","dd":"2026-01-12","car":"FedEx","svc":"Ground","val":84.1,"otif":0,"items":[["Motion Sensor",1,1],["Door/Window Sensor 2-pack",1,1]]},"SO-CA-00233":{"seg":"D2C","city":"Halifax","prov":"ON","st":"Delivered","od":"2026-01-12","pd":"2026-01-15","sd":"2026-01-15","dd":"2026-01-17","car":"Canada Post","svc":"Express","val":152.1,"otif":0,"items":[["Outdoor Camera Kit",1,1]]},"SO-CA-00234":{"seg":"D2C","city":"Halifax","prov":"ON","st":"Delivered","od":"2025-11-02","pd":"2025-11-05","sd":"2025-11-05","dd":"2025-11-06","car":"Canada Post","svc":"Ground","val":262.1,"otif":0,"items":[["Indoor Camera Kit",1,1],["Door/Window Sensor 2-pack",1,1],["Indoor Camera Kit",1,1]]},"SO-CA-00235":{"seg":"D2C","city":"London","prov":"ON","st":"Delivered","od":"2026-01-25","pd":"2026-01-27","sd":"2026-01-27","dd":"2026-01-29","car":"UPS","svc":"Ground","val":189.05,"otif":0,"items":[["Motion Sensor",1,0],["Sentinel Hub (CA Edition)",1,1]]},"SO-CA-00236":{"seg":"Installer","city":"Hamilton","prov":"ON","st":"Delivered","od":"2026-01-08","pd":"2026-01-11","sd":"2026-01-11","dd":"2026-01-13","car":"Purolator","svc":"Ground","val":973.14,"otif":0,"items":[["Outdoor Camera Kit",7,7]]},"SO-CA-00237":{"seg":"D2C","city":"Hamilton","prov":"ON","st":"Shipped","od":"2026-02-17","pd":"2026-02-20","sd":"2026-02-20","dd":"2026-02-22","car":"Purolator","svc":"Ground","val":714.2,"otif":0,"items":[["Indoor Camera Kit",2,2],["Sentinel Hub (CA Edition)",2,2],["Smart Siren",2,2]]},"SO-CA-00238":{"seg":"Installer","city":"Hamilton","prov":"NB","st":"Delivered","od":"2026-01-10","pd":"2026-01-16","sd":"2026-01-18","dd":"2026-01-21","car":"Canada Post","svc":"Standard","val":814.09,"otif":0,"items":[["Smart Siren",3,2],["Outdoor Camera Kit",4,4],["Smart Siren",3,3]]},"SO-CA-00239":{"seg":"D2C","city":"Toronto","prov":"ON","st":"Delivered","od":"2025-12-31","pd":"2026-01-03","sd":"2026-01-04","dd":"2026-01-06","car":"FedEx","svc":"Ground","val":330.1,"otif":0,"items":[["Sentinel Hub (CA Edition)",1,1],["Smart Siren",2,2]]},"SO-CA-00240":{"seg":"D2C","city":"Winnipeg","prov":"BC","st":"Delivered","od":"2025-12-05","pd":"2025-12-06","sd":"2025-12-07","dd":"2025-12-10","car":"FedEx","svc":"Ground","val":69.0,"otif":0,"items":[["Smart Siren",1,1]]}},"inv":[{"sku":"FG-CA100","name":"Sentinel Hub (CA Edition)","onhand":68,"alloc":17,"avail":51,"onorder":17,"ss":40,"rop":60},{"sku":"FG-CA110","name":"Indoor Camera Kit","onhand":107,"alloc":34,"avail":73,"onorder":23,"ss":50,"rop":80},{"sku":"FG-CA120","name":"Outdoor Camera Kit","onhand":81,"alloc":25,"avail":56,"onorder":20,"ss":45,"rop":70},{"sku":"FG-CA130","name":"Door/Window Sensor 2-pack","onhand":172,"alloc":57,"avail":115,"onorder":51,"ss":120,"rop":200},{"sku":"FG-CA140","name":"Motion Sensor","onhand":124,"alloc":43,"avail":81,"onorder":60,"ss":110,"rop":180},{"sku":"FG-CA150","name":"Smart Siren","onhand":59,"alloc":7,"avail":52,"onorder":19,"ss":70,"rop":120}],"invdate":"2026-02-27","sup":[{"n":"Pearl River Components","c":"CN","ot":15,"lead":38.1,"ppm":614,"spend":168380},{"n":"Midwest PCB Assembly","c":"US","ot":12,"lead":16.0,"ppm":181,"spend":152526},{"n":"Nordic RF Modules AB","c":"EU","ot":44,"lead":18.4,"ppm":347,"spend":136430},{"n":"Lakeview Semiconductors","c":"US","ot":33,"lead":16.8,"ppm":989,"spend":126833},{"n":"Shenzhen OptiCam Ltd.","c":"CN","ot":8,"lead":35.5,"ppm":1212,"spend":98112},{"n":"MapleWire Harnesses","c":"CA","ot":19,"lead":12.1,"ppm":160,"spend":74020},{"n":"Ontario Batteries Inc.","c":"CA","ot":33,"lead":12.3,"ppm":197,"spend":45965},{"n":"NorthStar Adapters","c":"US","ot":12,"lead":15.3,"ppm":487,"spend":40886},{"n":"Great Lakes Plastics Ltd.","c":"CA","ot":43,"lead":6.4,"ppm":1029,"spend":25433},{"n":"Niagara Packaging Co.","c":"CA","ot":50,"lead":5.8,"ppm":73,"spend":25404},{"n":"Windsor Fasteners Supply","c":"CA","ot":48,"lead":4.7,"ppm":201,"spend":19325},{"n":"Monterrey Metalworks","c":"MX","ot":35,"lead":15.8,"ppm":290,"spend":17562}],"mon":[["2025-10",10.4],["2025-11",9.1],["2025-12",11.8],["2026-01",14.8],["2026-02",20.9]],"car":[["Canada Post",78,21,13.78],["Canpar",24,8,15.13],["FedEx",30,7,14.19],["Purolator",64,12,15.6],["UPS",44,14,15.73]]};
+const PRODUCTS = [
+  {sku:"FG-CA100",name:"Sentinel Hub (CA Edition)",price:199,icon:"hub",desc:"The brain of your system. Connects every WHSS device and talks to the app.",feats:["Wi-Fi + Bluetooth LE","Battery backup","Built-in 85 dB chime"]},
+  {sku:"FG-CA110",name:"Indoor Camera Kit",price:109,icon:"cam",desc:"1080p indoor camera with night vision and two-way audio.",feats:["1080p HD + infrared night vision","Privacy shutter","Includes power adapter"]},
+  {sku:"FG-CA120",name:"Outdoor Camera Kit",price:169,icon:"camo",desc:"Weather-sealed camera for driveways, doors and back yards.",feats:["1080p HD + IR array","Weather-resistant housing","Motion zones"]},
+  {sku:"FG-CA130",name:"Door/Window Sensor 2-pack",price:49,icon:"door",desc:"Know the moment a door or window opens. Two sensors per pack.",feats:["Peel-and-stick install","Multi-year battery","Works with any frame"]},
+  {sku:"FG-CA140",name:"Motion Sensor",price:39,icon:"motion",desc:"Wide-angle motion detection with pet-friendly settings.",feats:["90° field of view","Pet-immune mode","Battery powered"]},
+  {sku:"FG-CA150",name:"Smart Siren",price:69,icon:"siren",desc:"A loud indoor siren that deters intruders and alerts the household.",feats:["105 dB alarm","Battery backup","Status light"]}
+];
+const PLANS={self:{n:"Self-Monitor",p:0},basic:{n:"Monitored",p:19.99},plus:{n:"Monitored Plus",p:34.99}};
+const PRESETS={starter:{"FG-CA100":1,"FG-CA130":1,"FG-CA140":1},home:{"FG-CA100":1,"FG-CA110":1,"FG-CA120":1,"FG-CA130":2,"FG-CA140":2,"FG-CA150":1},outdoor:{"FG-CA100":1,"FG-CA120":2,"FG-CA150":1},clear:{}};
+const money=n=>"$"+n.toLocaleString("en-CA",{minimumFractionDigits:2,maximumFractionDigits:2});
+const money0=n=>(n<0?"−$":"$")+Math.abs(Math.round(n)).toLocaleString("en-CA");
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const fmtDate=d=>{const [y,m,dd]=d.split("-").map(Number);return new Date(y,m-1,dd).toLocaleDateString("en-CA",{month:"short",day:"numeric",year:"numeric"});};
+
+/* ---------- Icons ---------- */
+function icon(k){
+  const s='stroke="#0f2742" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"';
+  const m={
+    hub:`<rect x="18" y="20" width="64" height="60" rx="14" ${s}/><circle cx="50" cy="50" r="12" ${s}/><circle cx="50" cy="50" r="4" fill="#f5a524"/>`,
+    cam:`<rect x="22" y="26" width="56" height="40" rx="12" ${s}/><circle cx="50" cy="46" r="11" ${s}/><circle cx="50" cy="46" r="4" fill="#f5a524"/><path d="M42 66v10h16V66" ${s}/>`,
+    camo:`<path d="M20 34h48l10 10v14H20z" ${s}/><circle cx="40" cy="46" r="7" ${s}/><circle cx="40" cy="46" r="2.5" fill="#f5a524"/><path d="M50 58v16M40 74h20" ${s}/>`,
+    door:`<rect x="26" y="18" width="30" height="64" rx="4" ${s}/><rect x="62" y="40" width="10" height="20" rx="3" ${s}/><rect x="58" y="44" width="4" height="12" fill="#f5a524"/>`,
+    motion:`<circle cx="50" cy="56" r="14" ${s}/><path d="M30 34a28 28 0 0 1 40 0M24 26a38 38 0 0 1 52 0" ${s}/><circle cx="50" cy="56" r="4" fill="#f5a524"/>`,
+    siren:`<path d="M30 70V48a20 20 0 0 1 40 0v22z" ${s}/><path d="M24 70h52" ${s}/><path d="M50 18v8M26 30l6 5M74 30l-6 5" ${s}/><circle cx="50" cy="52" r="5" fill="#f5a524"/>`
+  };
+  return `<svg viewBox="0 0 100 100" width="96" height="96" aria-hidden="true">${m[k]}</svg>`;
+}
+
+/* ---------- Router ---------- */
+const PAGES=["home","products","plans","quote","track","portal","privacy","about","contact","research"];
+function route(){
+  const raw=(location.hash||"#home").slice(1);
+  let [page,anchor]=raw.split("--");
+  if(!PAGES.includes(page)){
+    if(raw.startsWith("ref-")||raw.startsWith("r-")){page="research";anchor=raw;}else page="home";
+  }
+  document.querySelectorAll("section.page").forEach(s=>s.classList.toggle("active",s.id==="page-"+page));
+  document.querySelectorAll("nav.main a").forEach(a=>{if(a.dataset.nav===page)a.setAttribute("aria-current","page");else a.removeAttribute("aria-current");});
+  document.getElementById("mainnav").classList.remove("open");
+  document.querySelector(".menu-btn").setAttribute("aria-expanded","false");
+  const titles={home:"Home",products:"Products",plans:"Monitoring Plans",quote:"Build a Kit",track:"Track Order",portal:"Partner Portal",privacy:"Privacy & Security",about:"About",contact:"Contact",research:"Research: Chapter 13"};
+  document.title=titles[page]+" | WHSS — Windsor Home Security Systems";
+  if(anchor){
+    const el=document.getElementById(anchor);
+    if(el){setTimeout(()=>{el.scrollIntoView({behavior:"smooth",block:"start"});if(anchor.startsWith("ref-")){el.classList.add("flash");setTimeout(()=>el.classList.remove("flash"),1800);}},30);}
+  } else window.scrollTo(0,0);
+  if(page==="portal") drawCharts();
+}
+window.addEventListener("hashchange",route);
+document.querySelector(".menu-btn").addEventListener("click",e=>{const n=document.getElementById("mainnav");const o=n.classList.toggle("open");e.currentTarget.setAttribute("aria-expanded",o);});
+
+/* ---------- Products ---------- */
+document.getElementById("product-grid").innerHTML=PRODUCTS.map(p=>`
+  <article class="card prod">
+    <div class="art">${icon(p.icon)}</div>
+    <div class="sku">${p.sku}</div>
+    <h3 style="margin:4px 0 6px">${esc(p.name)}</h3>
+    <p class="muted small" style="margin:0">${esc(p.desc)}</p>
+    <ul>${p.feats.map(f=>`<li>${esc(f)}</li>`).join("")}</ul>
+    <div class="spacer"></div>
+    <div style="display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap">
+      <span class="price">${money(p.price)}</span>
+      <button class="btn btn-dark" data-add="${p.sku}">Add to kit</button>
+    </div>
+  </article>`).join("");
+
+/* ---------- Quote builder ---------- */
+const qty={};PRODUCTS.forEach(p=>qty[p.sku]=0);
+const qBody=document.querySelector("#q-items tbody");
+qBody.innerHTML=PRODUCTS.map(p=>`<tr><td><strong>${esc(p.name)}</strong><div class="sku">${p.sku}<span class="mob-price"> · ${money(p.price)}</span></div></td><td class="num">${money(p.price)}</td>
+<td><div class="qty"><button type="button" aria-label="Fewer ${esc(p.name)}" data-dec="${p.sku}">−</button><input type="number" min="0" max="20" value="0" id="qty-${p.sku}" aria-label="Quantity of ${esc(p.name)}"><button type="button" aria-label="More ${esc(p.name)}" data-inc="${p.sku}">+</button></div></td></tr>`).join("");
+function setQty(sku,v){qty[sku]=Math.max(0,Math.min(20,parseInt(v)||0));document.getElementById("qty-"+sku).value=qty[sku];renderQuote();}
+qBody.addEventListener("click",e=>{const b=e.target.closest("button");if(!b)return;if(b.dataset.inc)setQty(b.dataset.inc,qty[b.dataset.inc]+1);if(b.dataset.dec)setQty(b.dataset.dec,qty[b.dataset.dec]-1);});
+qBody.addEventListener("change",e=>{if(e.target.id?.startsWith("qty-"))setQty(e.target.id.slice(4),e.target.value);});
+document.querySelectorAll("input[name=plan],input[name=inst]").forEach(i=>i.addEventListener("change",renderQuote));
+document.querySelectorAll("[data-preset]").forEach(b=>b.addEventListener("click",()=>{const pr=PRESETS[b.dataset.preset];PRODUCTS.forEach(p=>{qty[p.sku]=pr[p.sku]||0;document.getElementById("qty-"+p.sku).value=qty[p.sku];});renderQuote();}));
+document.getElementById("product-grid").addEventListener("click",e=>{const b=e.target.closest("[data-add]");if(!b)return;const sku=b.dataset.add;if(qty["FG-CA100"]===0&&sku!=="FG-CA100")setQty("FG-CA100",1);setQty(sku,qty[sku]+(sku==="FG-CA100"&&qty[sku]>=1?0:1));b.textContent="✓ Added, view kit";b.onclick=()=>{location.hash="#quote"};});
+document.querySelectorAll("[data-plan]").forEach(a=>a.addEventListener("click",()=>{document.querySelector(`input[name=plan][value=${a.dataset.plan}]`).checked=true;if(qty["FG-CA100"]===0)setQty("FG-CA100",1);renderQuote();}));
+function quoteTotals(){
+  let sub=0;const lines=[];PRODUCTS.forEach(p=>{if(qty[p.sku]>0){sub+=p.price*qty[p.sku];lines.push([p.name,qty[p.sku],p.price*qty[p.sku]]);}});
+  const inst=document.querySelector("input[name=inst]:checked").value==="pro"?149:0;
+  const tax=(sub+inst)*0.13;const plan=PLANS[document.querySelector("input[name=plan]:checked").value];
+  return {sub,inst,tax,total:sub+inst+tax,plan,lines};
+}
+function renderQuote(){
+  const t=quoteTotals();
+  document.getElementById("sum-lines").innerHTML=t.lines.length?t.lines.map(l=>`<div class="sum-line"><span>${l[1]} × ${esc(l[0])}</span><span>${money(l[2])}</span></div>`).join("")+'<hr style="border:0;border-top:1px solid var(--line)">':'<p class="muted small">No devices yet. Pick a preset above or add devices.</p>';
+  document.getElementById("s-sub").textContent=money(t.sub);document.getElementById("s-inst").textContent=money(t.inst);
+  document.getElementById("s-tax").textContent=money(t.tax);document.getElementById("s-total").textContent=money(t.total);
+  document.getElementById("s-plan").textContent=money(t.plan.p)+"/mo";
+  const any=t.lines.length>0;document.getElementById("hub-err").textContent=any&&qty["FG-CA100"]===0?"Add a Sentinel Hub: every system needs one.":"";
+}
+renderQuote();
+const emailOK=v=>/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(v);
+function req(id,msg,test){const el=document.getElementById(id);const ok=test?test(el.value.trim()):el.value.trim()!=="";document.getElementById(id+"-err").textContent=ok?"":msg;el.setAttribute("aria-invalid",!ok);return ok;}
+let quoteSeq=1040;const quotes=[];
+document.getElementById("quote-form").addEventListener("submit",e=>{
+  e.preventDefault();
+  const t=quoteTotals();
+  let ok=[req("q-name","Please enter your name."),req("q-email","Please enter a valid email.",emailOK),req("q-postal","Enter a valid Canadian postal code.",v=>/^[A-Za-z]\d[A-Za-z][ -]?\d[A-Za-z]\d$/.test(v))].every(Boolean);
+  if(t.lines.length===0){document.getElementById("hub-err").textContent="Add at least one device to your kit.";ok=false;}
+  else if(qty["FG-CA100"]===0){ok=false;}
+  if(!ok)return;
+  const id="WHSS-Q-"+(++quoteSeq);quotes.push({id,...t});
+  document.getElementById("quote-success").innerHTML=`<div class="success"><strong>Quote ${id} created.</strong> Total ${money(t.total)} plus ${money(t.plan.p)}/mo (${esc(t.plan.n)}). A confirmation would be emailed to ${esc(document.getElementById("q-email").value)}.<br><span class="small"><span class="badge badge-demo">Demo</span> No order was placed. In a live system this record would go to the order-entry system (TPS).</span></div>`;
+});
+
+/* ---------- Tracking ---------- */
+const ids=Object.keys(DATA.orders);
+const samples=["SO-CA-00002","SO-CA-00005","SO-CA-00042","SO-CA-00118","SO-CA-00200"].filter(i=>DATA.orders[i]);
+document.getElementById("t-samples").innerHTML=samples.map(s=>`<button type="button" class="chip" data-s="${s}">${s}</button>`).join("");
+document.getElementById("t-samples").addEventListener("click",e=>{const b=e.target.closest("[data-s]");if(b){document.getElementById("t-id").value=b.dataset.s;track();}});
+document.getElementById("track-form").addEventListener("submit",e=>{e.preventDefault();track();});
+function normId(v){v=v.trim().toUpperCase();if(/^\d+$/.test(v))return "SO-CA-"+v.padStart(5,"0");if(/^SO-?CA-?\d+$/.test(v)){const n=v.match(/\d+$/)[0];return "SO-CA-"+n.padStart(5,"0");}return v;}
+function track(){
+  const id=normId(document.getElementById("t-id").value);const o=DATA.orders[id];const err=document.getElementById("t-err");const out=document.getElementById("t-result");
+  if(!document.getElementById("t-id").value.trim()){err.textContent="Please enter an order number.";out.innerHTML="";return;}
+  if(!o){err.textContent=`We couldn't find ${id}. Order numbers run from SO-CA-00001 to SO-CA-00240.`;out.innerHTML="";return;}
+  err.textContent="";
+  const delivered=o.st==="Delivered";
+  const lateShip=o.sd>o.pd;
+  const steps=[["Ordered",o.od,true],["Shipped",o.sd,true],["Delivered",o.dd,delivered]];
+  out.innerHTML=`<div class="card" style="margin-top:20px">
+    <div style="display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;align-items:center">
+      <h3 style="margin:0">Order ${id}</h3>
+      <span class="badge ${delivered?"badge-good":"badge-data"}">${delivered?"✓ Delivered":"➜ In transit"}</span>
+    </div>
+    <ol class="steps">${steps.map((s,i)=>`<li class="${s[2]?"done":""}"><div class="dot">${s[2]?"✓":i+1}</div>${s[0]}<br><span class="small">${s[2]||i<2?fmtDate(s[1]):"Expected "+fmtDate(s[1])}</span></li>`).join("")}</ol>
+    <div class="grid g2">
+      <dl class="kv">
+        <dt>Customer type</dt><dd>${esc(o.seg==="D2C"?"Online customer":o.seg)}</dd>
+        <dt>Ship to</dt><dd>${esc(o.city)}, ${esc(o.prov)}</dd>
+        <dt>Carrier</dt><dd>${esc(o.car)} (${esc(o.svc)})</dd>
+        <dt>Promised ship date</dt><dd>${fmtDate(o.pd)} ${lateShip?'<span class="badge badge-warn">! Shipped late</span>':'<span class="badge badge-good">✓ On time</span>'}</dd>
+        <dt>On time &amp; in full</dt><dd>${o.otif?'<span class="badge badge-good">✓ Yes</span>':'<span class="badge badge-bad">✕ No</span>'}</dd>
+        <dt>Order value</dt><dd>${money(o.val)}</dd>
+      </dl>
+      <div class="table-wrap"><table><thead><tr><th>Item</th><th class="num">Ordered</th><th class="num">Shipped</th></tr></thead><tbody>
+      ${o.items.map(it=>`<tr><td>${esc(it[0])}</td><td class="num">${it[1]}</td><td class="num">${it[2]}${it[2]<it[1]?' <span class="badge badge-warn">Backorder</span>':''}</td></tr>`).join("")}
+      </tbody></table></div>
+    </div></div>`;
+}
+
+/* ---------- Portal ---------- */
+const KPI=[
+  ["27.8%","Supplier PO lines on time","bad","Target 87–97% by supplier"],
+  ["17.4 days","Avg supplier lead time","warn","China-based suppliers: 35–38 days"],
+  ["98.5%","Production yield","good","First-pass yield 99.1%"],
+  ["13.3%","Orders on time &amp; in full","bad","53% shipped after promise date"]
+];
+document.getElementById("kpis").innerHTML=KPI.map(k=>`<div class="card kpi"><div class="v">${k[0]}</div><div class="l">${k[1]}</div><div class="s"><span class="badge badge-${k[2]}">${k[2]==="good"?"✓ On track":k[2]==="warn"?"! Watch":"✕ Needs action"}</span> <span class="muted">${k[3]}</span></div></div>`).join("");
+document.getElementById("inv-date").textContent=fmtDate(DATA.invdate);
+document.querySelector("#inv-table tbody").innerHTML=DATA.inv.map(r=>{const below=r.avail<r.ss;const reorder=!below&&r.avail<r.rop;return `<tr><td>${esc(r.name)}<div class="sku">${r.sku}</div></td><td class="num">${r.avail}</td><td class="num">${r.alloc}</td><td class="num">${r.onorder}</td><td class="num">${r.ss}</td><td>${below?'<span class="badge badge-bad">✕ Below safety stock</span>':reorder?'<span class="badge badge-warn">! Reorder</span>':'<span class="badge badge-good">✓ OK</span>'}</td></tr>`;}).join("");
+// supplier table
+let supSort={k:"spend",dir:-1};
+function renderSup(){
+  const rows=[...DATA.sup].sort((a,b)=>(a[supSort.k]>b[supSort.k]?1:a[supSort.k]<b[supSort.k]?-1:0)*supSort.dir);
+  const reg={CA:"Canada",US:"USA",EU:"Sweden",CN:"China",MX:"Mexico"};
+  document.querySelector("#sup-table tbody").innerHTML=rows.map(r=>`<tr><td>${esc(r.n)}</td><td>${reg[r.c]||r.c}</td><td class="num">${money0(r.spend)}</td><td class="num">${r.ot}% ${r.ot<20?'<span class="badge badge-bad">✕</span>':''}</td><td class="num">${r.lead}</td><td class="num">${r.ppm.toLocaleString()}</td></tr>`).join("");
+  document.querySelectorAll("#sup-table th").forEach(th=>th.setAttribute("aria-sort",th.dataset.k===supSort.k?(supSort.dir>0?"ascending":"descending"):"none"));
+}
+document.querySelectorAll("#sup-table th.sortable").forEach(th=>{th.tabIndex=0;const f=()=>{supSort={k:th.dataset.k,dir:supSort.k===th.dataset.k?-supSort.dir:(["n","c"].includes(th.dataset.k)?1:-1)};renderSup();};th.addEventListener("click",f);th.addEventListener("keydown",e=>{if(e.key==="Enter"||e.key===" "){e.preventDefault();f();}});});
+renderSup();
+
+const tip=document.getElementById("tip");
+function showTip(e,html){tip.innerHTML=html;tip.classList.add("on");const x=Math.min(e.clientX+14,innerWidth-270);tip.style.left=x+"px";tip.style.top=(e.clientY-44)+"px";}
+function hideTip(){tip.classList.remove("on");}
+function barChart(el,rows,opts){
+  // rows: [label, value(0-100), tooltipHtml]
+  const W=520,H=260,m={t:16,r:12,b:44,l:44},iw=W-m.l-m.r,ih=H-m.t-m.b;
+  const max=opts.max||100;const bw=iw/rows.length;const barW=Math.min(54,bw*0.62);
+  let g="";
+  [0,25,50,75,100].filter(v=>v<=max).forEach(v=>{const y=m.t+ih-(v/max)*ih;g+=`<line x1="${m.l}" x2="${W-m.r}" y1="${y}" y2="${y}" stroke="#e6eaf0"/><text x="${m.l-8}" y="${y+4}" text-anchor="end" font-size="11" fill="#6b7584">${v}%</text>`;});
+  rows.forEach((r,i)=>{
+    const h=(r[1]/max)*ih,x=m.l+i*bw+(bw-barW)/2,y=m.t+ih-h;const rad=Math.min(4,h);
+    const path=`M${x},${m.t+ih} V${y+rad} Q${x},${y} ${x+rad},${y} H${x+barW-rad} Q${x+barW},${y} ${x+barW},${y+rad} V${m.t+ih} Z`;
+    g+=`<g class="bar" data-i="${i}"><rect x="${m.l+i*bw}" y="${m.t}" width="${bw}" height="${ih}" fill="transparent"/><path d="${path}" fill="#2563c9"/>`;
+    g+=`<text x="${x+barW/2}" y="${y-6}" text-anchor="middle" font-size="12" font-weight="700" fill="#1b2430">${r[1].toFixed(0)}%</text>`;
+    g+=`<text x="${x+barW/2}" y="${H-m.b+18}" text-anchor="middle" font-size="11.5" fill="#4a5565">${esc(r[0])}</text></g>`;
+  });
+  g+=`<line x1="${m.l}" x2="${W-m.r}" y1="${m.t+ih}" y2="${m.t+ih}" stroke="#9aa3af"/>`;
+  el.innerHTML=`<svg class="chart" viewBox="0 0 ${W} ${H}" role="img" aria-label="${esc(opts.label)}">${g}</svg>`;
+  el.querySelectorAll(".bar").forEach(b=>{const r=rows[+b.dataset.i];b.addEventListener("mousemove",e=>showTip(e,r[2]));b.addEventListener("mouseleave",hideTip);b.querySelector("path").addEventListener("mouseenter",()=>b.querySelector("path").setAttribute("fill","#173a5e"));b.addEventListener("mouseleave",()=>b.querySelector("path").setAttribute("fill","#2563c9"));});
+}
+let drawn=false;
+function drawCharts(){
+  if(drawn)return;drawn=true;
+  const mn=p=>{const [y,m]=p.split("-");return new Date(+y,+m-1,1).toLocaleDateString("en-CA",{month:"short",year:"2-digit"});};
+  const otif=DATA.mon.map(r=>[mn(r[0]),r[1],`<strong>${mn(r[0])}</strong><br>OTIF: ${r[1]}%`]);
+  barChart(document.getElementById("ch-otif"),otif,{label:"Bar chart: monthly on-time in-full rate, rising from about 10% to 21%"});
+  document.getElementById("tb-otif").innerHTML=`<div class="table-wrap" style="margin-top:8px"><table><thead><tr><th>Month</th><th class="num">OTIF</th></tr></thead><tbody>${DATA.mon.map(r=>`<tr><td>${mn(r[0])}</td><td class="num">${r[1]}%</td></tr>`).join("")}</tbody></table></div>`;
+  const car=[...DATA.car].sort((a,b)=>b[2]-a[2]).map(r=>[r[0],r[2],`<strong>${r[0]}</strong><br>On time: ${r[2]}%<br>Shipments: ${r[1]}<br>Avg freight: ${money(r[3])}`]);
+  barChart(document.getElementById("ch-car"),car,{label:"Bar chart: on-time delivery by carrier, all below about 21%"});
+  document.getElementById("tb-car").innerHTML=`<div class="table-wrap" style="margin-top:8px"><table><thead><tr><th>Carrier</th><th class="num">Shipments</th><th class="num">On time</th><th class="num">Avg freight</th></tr></thead><tbody>${DATA.car.map(r=>`<tr><td>${r[0]}</td><td class="num">${r[1]}</td><td class="num">${r[2]}%</td><td class="num">${money(r[3])}</td></tr>`).join("")}</tbody></table></div>`;
+}
+document.querySelectorAll(".toggle-table").forEach(b=>b.addEventListener("click",()=>{const t=document.getElementById(b.dataset.target);t.hidden=!t.hidden;b.textContent=t.hidden?"Show as table":"Hide table";}));
+
+/* ---------- Contact ---------- */
+document.getElementById("contact-form").addEventListener("submit",e=>{
+  e.preventDefault();
+  const ok=[req("c-name","Please enter your name."),req("c-email","Please enter a valid email.",emailOK),req("c-msg","Please write a short message.",v=>v.length>=10)].every(Boolean);
+  if(!ok)return;
+  const team={sales:"Sales",support:"Customer Support",partner:"Partnerships",privacy:"Privacy Officer"}[document.getElementById("c-topic").value];
+  const ord=normId(document.getElementById("c-order").value||"");
+  const linked=DATA.orders[ord]?` and linked to order ${ord}`:"";
+  document.getElementById("contact-success").innerHTML=`<div class="success"><strong>Thanks, ${esc(document.getElementById("c-name").value.trim())}!</strong> Case WHSS-C-${Math.floor(1000+Math.random()*9000)} was routed to <strong>${team}</strong>${linked}. We reply within one business day.<br><span class="small"><span class="badge badge-demo">Demo</span> No message was actually sent.</span></div>`;
+  e.target.reset();
+});
+
+/* ---------- Cost-benefit calculator ---------- */
+const BENEFITS=82590,IMPL=45000,SUPPORT=10000,USD=31.10,FX=1.33,YEARS=5;
+function calc(){
+  const real=+document.getElementById("cb-real").value/100,r=+document.getElementById("cb-rate").value,users=+document.getElementById("cb-users").value;
+  document.getElementById("cb-real-v").textContent=Math.round(real*100)+"%";
+  const sub=users*USD*12*FX,annualCost=sub+SUPPORT,ben=BENEFITS*real,net=ben-annualCost;
+  let pv=0;for(let t=1;t<=YEARS;t++)pv+=net/Math.pow(1+r,t);
+  const npv=pv-IMPL;const totCost=IMPL+annualCost*YEARS;const roi=(ben*YEARS-totCost)/totCost;
+  const annuity=(1-Math.pow(1+r,-YEARS))/r;const be=(IMPL/annuity+annualCost)/BENEFITS;
+  document.getElementById("cb-npv").textContent=money0(npv);
+  document.getElementById("cb-roi").textContent=(roi*100).toFixed(0)+"%";
+  document.getElementById("cb-pay").textContent=net>0?(IMPL/net<1?Math.round(IMPL/net*12)+" months":(IMPL/net).toFixed(1)+" years"):"Never";
+  document.getElementById("cb-npv").style.color=npv>=0?"var(--good)":"var(--bad)";
+  document.getElementById("cb-note").innerHTML=`Annual cost: ${money0(annualCost)} (subscription ${money0(sub)} + support ${money0(SUPPORT)}). Annual benefits at this level: ${money0(ben)}. <strong>NPV turns negative below about ${Math.round(be*100)}% of estimated benefits.</strong> <span class="muted">Group estimates. See the table above for assumptions.</span>`;
+}
+["cb-real","cb-rate","cb-users"].forEach(id=>document.getElementById(id).addEventListener("input",calc));
+calc();
+
+route();
+</script>
+</body>
+</html>
